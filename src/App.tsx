@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import type { Weight } from './engine/job';
 import { analyze, type Report, type SkillResult } from './engine/match';
 import { SAMPLE_JOB, SAMPLE_RESUME } from './engine/samples';
+import { pdfText } from './pdf';
 
 // the texts stay in this browser between visits, and nowhere else
 function remembered(key: string): string {
@@ -23,6 +24,7 @@ export default function App() {
   const [resume, setResume] = useState(() => remembered('shortlist.resume'));
   const [job, setJob] = useState(() => remembered('shortlist.job'));
   const [report, setReport] = useState<Report | null>(null);
+  const [reading, setReading] = useState('');
 
   const ready = resume.trim().length > 40 && job.trim().length > 40;
 
@@ -31,6 +33,17 @@ export default function App() {
     remember('shortlist.job', job);
     setReport(analyze(resume, job));
     requestAnimationFrame(() => document.getElementById('report')?.scrollIntoView({ behavior: 'smooth' }));
+  }
+
+  async function openPdf(file: File | undefined) {
+    if (!file) return;
+    setReading(`Reading ${file.name}…`);
+    try {
+      setResume(await pdfText(file));
+      setReading('');
+    } catch (e) {
+      setReading(e instanceof Error && e.message.includes('scan') ? e.message : "Couldn't read that PDF. Paste the text instead.");
+    }
   }
 
   function example() {
@@ -61,7 +74,14 @@ export default function App() {
             <span className="sheet-title">Your resume</span>
             <textarea value={resume} onChange={(e) => setResume(e.target.value)} spellCheck={false}
               placeholder="Paste the text of your resume here, the whole thing, headings included." />
-            <span className="count">{words.resume ? `${words.resume} words` : ''}</span>
+            <span className="sheet-foot">
+              <span className="file">
+                or <label className="link">pick the PDF<input type="file" accept="application/pdf,.pdf" hidden
+                  onChange={(e) => { openPdf(e.target.files?.[0]); e.target.value = ''; }} /></label>
+                {reading && <span role="status"> · {reading}</span>}
+              </span>
+              <span className="count">{words.resume ? `${words.resume} words` : ''}</span>
+            </span>
           </label>
           <label className="sheet">
             <span className="sheet-title">The job ad</span>

@@ -98,3 +98,6 @@ footer { margin: 70px 0 30px; padding-top: 14px; border-top: 1px solid var(--rul
 .checks li::before { content: counter(fix); grid-row: span 2; font-family: var(--mono); font-size: 14px; color: var(--red); border: 1.5px solid var(--red); border-radius: 50%; width: 24px; height: 24px; display: grid; place-items: center; }
 .checks li span { color: var(--ink-soft); }
 .fine { font-size: 14px; color: var(--green); margin-top: 14px; }
+
+.sheet-foot { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-faint); }
+.sheet-foot .link { font-size: 13px; }
