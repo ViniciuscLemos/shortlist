@@ -136,7 +136,11 @@ function SkillRow({ s }: { s: SkillResult }) {
     return (
       <li className="skill missing">
         <span className="name">{s.skill.name}</span>
-        <span className="where">not in your resume · the ad says “{quote(s.line, 80)}”</span>
+        <span className="where">
+          not in your resume
+          {/* the line of the ad only helps when it says more than the name */}
+          {s.line.trim().length > s.skill.name.length + 6 && <> · the ad says “{quote(s.line, 80)}”</>}
+        </span>
       </li>
     );
   }

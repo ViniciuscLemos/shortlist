@@ -95,6 +95,10 @@ describe('the match', () => {
     expect(report.years).toEqual({ asked: 3, have: 5 });
   });
 
+  it('says when a requirement is there but only listed', () => {
+    expect(report.verdict).toContain('AWS only in a list');
+  });
+
   it('a skill only in the list counts less, and says so', () => {
     expect(result('aws').onlyListed).toBe(true);
     expect(result('react').onlyListed).toBe(false);
@@ -107,6 +111,8 @@ describe('the match', () => {
     const weak = report.checks.find((c) => c.id === 'weak')!;
     expect(weak.ok).toBe(false);
     expect(weak.advice).toContain('2 lines');
+    // quoted as written, accents and all
+    expect(weak.advice).toContain('"Responsável por manter…"');
   });
 
   it('an empty ad says there is nothing to compare', () => {

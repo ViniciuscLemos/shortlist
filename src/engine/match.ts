@@ -69,7 +69,14 @@ function verdict(score: number, skills: SkillResult[], missing: SkillResult[], y
   if (!total) return "The ad doesn't mention any skill this knows yet, so there's nothing to compare.";
   const requiredMissing = missing.filter((s) => s.weight === 'required');
   const short = years.asked && years.have < years.asked ? ` They ask for ${years.asked} years and the resume shows about ${years.have || 'less than one'}.` : '';
-  if (score >= 75 && !requiredMissing.length) return `A strong match: every requirement is in the resume.${short}`;
+  const requiredListed = skills.filter((s) => s.weight === 'required' && s.onlyListed);
+  if (score >= 75 && !requiredMissing.length) {
+    if (requiredListed.length) {
+      const names = requiredListed.map((s) => s.skill.name).join(', ');
+      return `A strong match: every requirement is in the resume, though ${names} only in a list.${short}`;
+    }
+    return `A strong match: every requirement is in the resume, and shown in what you did.${short}`;
+  }
   if (requiredMissing.length === 1) return `Close: one requirement isn't in the resume (${requiredMissing[0].skill.name}).${short}`;
   if (requiredMissing.length > 1) {
     const names = requiredMissing.slice(0, 3).map((s) => s.skill.name);
@@ -103,7 +110,7 @@ function checks(resume: Resume, skills: SkillResult[]): Check[] {
       `Only ${numbers} of ${done.length} lines about your work have a number. "Cut the load time from 4 s to 1 s" or "used by 300 people a day" is what people remember.`);
     const weak = done.filter((l) => WEAK.test(plain(l)));
     add('weak', weak.length === 0,
-      `${weak.length} line${weak.length === 1 ? ' starts' : 's start'} with "${plain(weak[0] ?? '').split(' ').slice(0, 2).join(' ')}…". Say what you did instead: "built", "reduced", "automated".`);
+      `${weak.length} line${weak.length === 1 ? ' starts' : 's start'} like "${(weak[0] ?? '').split(/\s+/).slice(0, 3).join(' ')}…". Say what you did instead: "built", "reduced", "automated".`);
     const strong = done.filter((l) => ACTION_VERBS.test(plain(l))).length;
     add('verbs', strong / done.length >= 0.3,
       'Few lines start with what you did. Start them with a verb in the past ("developed", "migrated", "led") so the reader sees the action first.');
