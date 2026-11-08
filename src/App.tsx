@@ -93,6 +93,17 @@ const GROUPS: [Weight, string, string][] = [
   ['nice', 'What would be a plus', 'Nice to have. Missing these rarely costs the interview.'],
 ];
 
+const CHECK_NAME: Record<string, string> = {
+  contact: 'Contact at the top',
+  links: 'A link to your work',
+  experience: 'Experience under its own heading',
+  length: 'A length people read',
+  numbers: 'Numbers in what you did',
+  weak: 'No "responsible for"',
+  verbs: 'Lines that start with an action',
+  shown: 'Skills shown, not only listed',
+};
+
 const LEVEL: Record<string, string> = { intern: 'an internship', junior: 'a junior role', mid: 'a mid-level role', senior: 'a senior role', lead: 'a lead role' };
 
 // long lines are cut around the skill, so the quote stays short
@@ -150,6 +161,33 @@ function ReportView({ report }: { report: Report }) {
           );
         })}
       </div>
+
+      <Checks report={report} />
+    </section>
+  );
+}
+
+function Checks({ report }: { report: Report }) {
+  const todo = report.checks.filter((c) => !c.ok);
+  const fine = report.checks.filter((c) => c.ok);
+  return (
+    <section className="checks">
+      <h2>Before you send it</h2>
+      {todo.length === 0 ? (
+        <p className="note">Nothing to fix in the resume itself. What's left is the match above.</p>
+      ) : (
+        <ol>
+          {todo.map((c) => (
+            <li key={c.id}>
+              <strong>{CHECK_NAME[c.id] ?? c.id}</strong>
+              <span>{c.advice}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+      {fine.length > 0 && (
+        <p className="fine">Already fine: {fine.map((c) => (CHECK_NAME[c.id] ?? c.id).toLowerCase()).join(', ')}.</p>
+      )}
     </section>
   );
 }
