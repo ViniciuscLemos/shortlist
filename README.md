@@ -2,7 +2,9 @@
 
 Paste your resume and a job ad, and see how close they are: what the ad asks for, what your resume shows, what's missing, and what to fix before sending it.
 
-It's a work in progress. The part that reads and compares is done and tested; the page comes next.
+**Try it:** [viniciusclemos.github.io/shortlist](https://viniciusclemos.github.io/shortlist/). There's an example button if you just want to see it work.
+
+![The report: a score of 81, a sentence about the match, the requirements with the line of the resume that shows each one, the missing ones underlined in red, and what to fix before sending](docs/report.png)
 
 ## How it reads
 
@@ -19,9 +21,20 @@ A score from 0 to 100 (required counts 3, mentioned 2, a plus 1), a sentence abo
 
 Everything runs in the browser: the resume never leaves the computer, it's instant, it's free to host, and when it says "Kubernetes is missing" you can see exactly which line of the ad asked for it. An AI step to rewrite the weak lines is planned on top of this, as an option.
 
+## The page
+
+Two sheets side by side, the resume and the ad. The resume can also be picked as a PDF: pdf.js reads it right there in the browser, and it only loads when someone picks a file, so the page stays light. A scanned PDF has no text in it, and it says so instead of failing quietly.
+
+The report reads like a note from someone who read both: what they require, with the line of your resume that shows each one highlighted (or "only in a list"), the missing ones underlined in red, and a numbered list of what to fix before sending. The two texts stay in the browser's storage for the next visit, and nowhere else.
+
+<img src="docs/report-dark.png" alt="The report in dark mode" width="640">
+
 ## Running
 
 ```bash
 npm install
-npm test
+npm run dev     # the page on localhost:5173
+npm test        # the engine's tests
 ```
+
+It's deployed to GitHub Pages by the same Action that runs the tests.
