@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { analyze, type Report } from './engine/match';
+import type { Weight } from './engine/job';
+import { analyze, type Report, type SkillResult } from './engine/match';
 import { SAMPLE_JOB, SAMPLE_RESUME } from './engine/samples';
 
 // the texts stay in this browser between visits, and nowhere else
@@ -86,12 +87,68 @@ export default function App() {
   );
 }
 
+const GROUPS: [Weight, string, string][] = [
+  ['required', 'What they require', 'From the "requirements" part of the ad.'],
+  ['mentioned', 'What else they mention', 'In the description of the role, not as a requirement.'],
+  ['nice', 'What would be a plus', 'Nice to have. Missing these rarely costs the interview.'],
+];
+
+const LEVEL: Record<string, string> = { intern: 'an internship', junior: 'a junior role', mid: 'a mid-level role', senior: 'a senior role', lead: 'a lead role' };
+
+// long lines are cut around the skill, so the quote stays short
+function quote(line: string, max = 110): string {
+  return line.length > max ? `${line.slice(0, max - 1).trimEnd()}…` : line;
+}
+
+function SkillRow({ s }: { s: SkillResult }) {
+  if (!s.evidence) {
+    return (
+      <li className="skill missing">
+        <span className="name">{s.skill.name}</span>
+        <span className="where">not in your resume · the ad says “{quote(s.line, 80)}”</span>
+      </li>
+    );
+  }
+  return (
+    <li className={`skill ${s.onlyListed ? 'listed' : 'shown'}`}>
+      <span className="name"><mark>{s.skill.name}</mark></span>
+      <span className="where">
+        {s.onlyListed ? 'only in a list, never shown being used' : <>“{quote(s.evidence.line)}”</>}
+      </span>
+    </li>
+  );
+}
+
 function ReportView({ report }: { report: Report }) {
+  const { years, level } = report;
   return (
     <section className="report" id="report" aria-label="The comparison">
       <div className="score-line">
         <p className="score"><span>{report.score}</span><small>/100</small></p>
         <p className="verdict">{report.verdict}</p>
+      </div>
+
+      {(years.asked || level) && (
+        <p className="context">
+          {level && <>It reads as {LEVEL[level]}. </>}
+          {years.asked != null && <>They ask for {years.asked}+ years; the dates in your experience add up to {years.have ? `about ${years.have}` : 'less than one'}.</>}
+          {years.asked == null && years.have > 0 && <>The dates in your experience add up to about {years.have} years.</>}
+        </p>
+      )}
+
+      <div className="groups">
+        {GROUPS.map(([weight, title, note]) => {
+          const list = report.skills.filter((s) => s.weight === weight);
+          if (!list.length) return null;
+          const found = list.filter((s) => s.evidence).length;
+          return (
+            <section key={weight} className="group">
+              <h2>{title} <span className="tally">{found} of {list.length}</span></h2>
+              <p className="note">{note}</p>
+              <ul>{list.map((s) => <SkillRow key={s.skill.id} s={s} />)}</ul>
+            </section>
+          );
+        })}
       </div>
     </section>
   );

@@ -75,3 +75,18 @@ footer { margin: 70px 0 30px; padding-top: 14px; border-top: 1px solid var(--rul
   .score span { font-size: 56px; }
   .verdict { font-size: 19px; }
 }
+
+.context { color: var(--ink-soft); margin: 18px 0 0; max-width: 720px; }
+
+.groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 34px; margin-top: 36px; }
+.group h2 { font-size: 20px; display: flex; align-items: baseline; gap: 10px; }
+.tally { font-family: var(--mono); font-size: 13px; color: var(--ink-faint); font-weight: 500; }
+.note { font-size: 13px; color: var(--ink-faint); margin: 4px 0 10px; }
+.group ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.skill { padding: 9px 0; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 2px; }
+.skill .name { font-weight: 600; }
+.skill .where { font-size: 13px; color: var(--ink-soft); font-style: italic; overflow-wrap: anywhere; }
+.skill mark { background: linear-gradient(transparent 35%, var(--marker) 35%, var(--marker) 88%, transparent 88%); color: inherit; padding: 0 2px; }
+.skill.listed mark { background: linear-gradient(transparent 35%, var(--marker-soft) 35%, var(--marker-soft) 88%, transparent 88%); }
+.skill.listed .where { font-style: normal; }
+.skill.missing .name { color: var(--red); text-decoration: underline wavy var(--red); text-underline-offset: 4px; text-decoration-thickness: 1px; }
