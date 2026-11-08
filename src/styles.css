@@ -14,7 +14,26 @@
   --serif: 'Literata', Georgia, serif;
   --sans: 'Work Sans', system-ui, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --sheet: #ffffff;
   color-scheme: light;
+}
+
+/* at night the paper goes dark and the highlighter stays a highlighter */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #181713;
+    --paper-2: #211f1a;
+    --ink: #ece7da;
+    --ink-soft: #bdb6a6;
+    --ink-faint: #a29b8b;
+    --rule: #37332b;
+    --marker: #8a7414;
+    --marker-soft: #4f4516;
+    --red: #f08a73;
+    --green: #8cc7a0;
+    --sheet: #201e19;
+    color-scheme: dark;
+  }
 }
 
 * { box-sizing: border-box; }
@@ -39,7 +58,7 @@ button, textarea { font: inherit; color: inherit; }
 .lede { font-size: 18px; color: var(--ink-soft); margin: 16px 0 0; }
 
 .inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.sheet { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px 10px; }
+.sheet { display: flex; flex-direction: column; background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px 10px; }
 .sheet-title { font-family: var(--serif); font-size: 18px; margin-bottom: 8px; }
 .sheet textarea {
   border: 0;
