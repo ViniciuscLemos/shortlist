@@ -126,6 +126,16 @@ describe('the match', () => {
     expect(weak.advice).toContain('"Responsável por manter…"');
   });
 
+  it('asks to write a skill the way the ad does', () => {
+    const r = analyze('Experiência\n- Built the reports on Postgres and k8s', 'Requisitos:\n- PostgreSQL\n- Kubernetes', NOW);
+    const spelling = r.checks.find((c) => c.id === 'spelling')!;
+    expect(spelling.ok).toBe(false);
+    expect(spelling.advice).toContain('They write "PostgreSQL", you write "Postgres"');
+    expect(spelling.advice).toContain('"Kubernetes", you write "k8s"');
+    const same = analyze('Experiência\n- Built it on postgresql', 'Requisitos:\n- PostgreSQL', NOW);
+    expect(same.checks.find((c) => c.id === 'spelling')!.ok).toBe(true);
+  });
+
   it('an empty ad says there is nothing to compare', () => {
     expect(analyze(SAMPLE_RESUME, 'Vaga de atendimento ao público').verdict).toContain('nothing to compare');
   });

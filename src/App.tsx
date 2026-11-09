@@ -122,6 +122,7 @@ const CHECK_NAME: Record<string, string> = {
   weak: 'No "responsible for"',
   verbs: 'Lines that start with an action',
   shown: 'Skills shown, not only listed',
+  spelling: 'Their words for things',
 };
 
 const LEVEL: Record<string, string> = { intern: 'an internship', junior: 'a junior role', mid: 'a mid-level role', senior: 'a senior role', lead: 'a lead role' };

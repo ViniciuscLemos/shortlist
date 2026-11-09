@@ -1,5 +1,6 @@
 import { readJob, type Job, type JobSkill, type Level, type Weight } from './job';
 import { readResume, type Evidence, type Resume } from './resume';
+import { spelledAs } from './find';
 import { plain } from './text';
 
 export interface SkillResult extends JobSkill {
@@ -116,8 +117,28 @@ function checks(resume: Resume, skills: SkillResult[]): Check[] {
       'Few lines start with what you did. Start them with a verb in the past ("developed", "migrated", "led") so the reader sees the action first.');
   }
 
+  // a filter that looks for "PostgreSQL" may not count "Postgres": write it the way the ad does
+  const spelled = skills.flatMap((s) => {
+    if (!s.evidence || s.weight === 'nice') return [];
+    const theirs = spelledAs(s.line, s.skill.id);
+    const yours = spelledAs(s.evidence.line, s.skill.id);
+    const same = (a: string, b: string) => plain(a).replace(/[\s.\-/]/g, '') === plain(b).replace(/[\s.\-/]/g, '');
+    return theirs && yours && !same(theirs, yours) ? [`they write ${shown(theirs, s.line)}, you write ${shown(yours, s.evidence.line)}`] : [];
+  });
+  add('spelling', spelled.length === 0,
+    `${cap(spelled.slice(0, 3).join('; '))}. Some recruiting systems only match the exact word, so use theirs at least once.`);
+
   const listed = skills.filter((s) => s.onlyListed && s.weight !== 'nice');
   add('shown', listed.length === 0,
     `${listed.map((s) => s.skill.name).join(', ')} ${listed.length === 1 ? 'is' : 'are'} asked for but only appear${listed.length === 1 ? 's' : ''} in a list. Mention ${listed.length === 1 ? 'it' : 'them'} in a job or project where you actually used ${listed.length === 1 ? 'it' : 'them'}.`);
   return out;
+}
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+// the loose match comes back in plain form: find it again in the original line to quote it as written
+function shown(match: string, line: string): string {
+  const at = plain(line).indexOf(match);
+  const same = at >= 0 && line.length === plain(line).length ? line.slice(at, at + match.length) : match;
+  return `"${same}"`;
 }
