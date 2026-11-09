@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type KeyboardEvent } from 'react';
 import type { Weight } from './engine/job';
 import { analyze, type Report, type SkillResult } from './engine/match';
 import { SAMPLE_JOB, SAMPLE_RESUME } from './engine/samples';
@@ -25,6 +25,9 @@ export default function App() {
   const [job, setJob] = useState(() => remembered('shortlist.job'));
   const [report, setReport] = useState<Report | null>(null);
   const [reading, setReading] = useState('');
+  // the texts the report was made from, to tell when it no longer matches what's on the page
+  const [compared, setCompared] = useState({ resume: '', job: '' });
+  const stale = !!report && (compared.resume !== resume || compared.job !== job);
 
   const ready = resume.trim().length > 40 && job.trim().length > 40;
 
@@ -32,6 +35,7 @@ export default function App() {
     remember('shortlist.resume', resume);
     remember('shortlist.job', job);
     setReport(analyze(resume, job));
+    setCompared({ resume, job });
     requestAnimationFrame(() => document.getElementById('report')?.scrollIntoView({ behavior: 'smooth' }));
   }
 
@@ -50,6 +54,15 @@ export default function App() {
     setResume(SAMPLE_RESUME);
     setJob(SAMPLE_JOB);
     setReport(analyze(SAMPLE_RESUME, SAMPLE_JOB));
+    setCompared({ resume: SAMPLE_RESUME, job: SAMPLE_JOB });
+  }
+
+  // ctrl+enter (cmd+enter on a Mac) from either sheet, so you don't have to reach for the button
+  function shortcut(e: KeyboardEvent) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && ready) {
+      e.preventDefault();
+      compare();
+    }
   }
 
   const words = useMemo(() => ({
@@ -72,7 +85,7 @@ export default function App() {
         <section className="inputs" aria-label="The two texts">
           <label className="sheet">
             <span className="sheet-title">Your resume</span>
-            <textarea value={resume} onChange={(e) => setResume(e.target.value)} spellCheck={false}
+            <textarea value={resume} onChange={(e) => setResume(e.target.value)} onKeyDown={shortcut} spellCheck={false}
               placeholder="Paste the text of your resume here, the whole thing, headings included." />
             <span className="sheet-foot">
               <span className="file">
@@ -85,7 +98,7 @@ export default function App() {
           </label>
           <label className="sheet">
             <span className="sheet-title">The job ad</span>
-            <textarea value={job} onChange={(e) => setJob(e.target.value)} spellCheck={false}
+            <textarea value={job} onChange={(e) => setJob(e.target.value)} onKeyDown={shortcut} spellCheck={false}
               placeholder="Paste the ad, with its 'Requirements' and 'Nice to have' parts if it has them." />
             <span className="count">{words.job ? `${words.job} words` : ''}</span>
           </label>
@@ -94,8 +107,14 @@ export default function App() {
         <div className="actions">
           <button type="button" className="go" disabled={!ready} onClick={compare}>Compare them</button>
           <button type="button" className="link" onClick={example}>or try it with an example</button>
+          {ready && <span className="hint">ctrl + enter works too</span>}
         </div>
 
+        {stale && (
+          <p className="stale" role="status">
+            You changed the text since this was made. <button type="button" className="link" onClick={compare}>Compare again</button>
+          </p>
+        )}
         {report && <ReportView report={report} />}
       </main>
 
