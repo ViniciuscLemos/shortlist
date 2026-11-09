@@ -196,7 +196,10 @@ function ReportView({ report }: { report: Report }) {
       <div className="score-line">
         <p className="score"><span>{report.score}</span><small>/100</small></p>
         <p className="verdict">{report.verdict}</p>
-        <CopyText report={report} />
+        <span className="report-tools">
+          <CopyText report={report} />
+          <button type="button" className="link copy" onClick={() => window.print()}>print</button>
+        </span>
       </div>
 
       {(years.asked || level) && (
