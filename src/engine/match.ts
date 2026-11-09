@@ -122,8 +122,7 @@ function checks(resume: Resume, skills: SkillResult[]): Check[] {
     if (!s.evidence || s.weight === 'nice') return [];
     const theirs = spelledAs(s.line, s.skill.id);
     const yours = spelledAs(s.evidence.line, s.skill.id);
-    const same = (a: string, b: string) => plain(a).replace(/[\s.\-/]/g, '') === plain(b).replace(/[\s.\-/]/g, '');
-    return theirs && yours && !same(theirs, yours) ? [`they write ${shown(theirs, s.line)}, you write ${shown(yours, s.evidence.line)}`] : [];
+    return theirs && yours && variants(theirs, yours) ? [`they write ${shown(theirs, s.line)}, you write ${shown(yours, s.evidence.line)}`] : [];
   });
   add('spelling', spelled.length === 0,
     `${cap(spelled.slice(0, 3).join('; '))}. Some recruiting systems only match the exact word, so use theirs at least once.`);
@@ -132,6 +131,14 @@ function checks(resume: Resume, skills: SkillResult[]): Check[] {
   add('shown', listed.length === 0,
     `${listed.map((s) => s.skill.name).join(', ')} ${listed.length === 1 ? 'is' : 'are'} asked for but only appear${listed.length === 1 ? 's' : ''} in a list. Mention ${listed.length === 1 ? 'it' : 'them'} in a job or project where you actually used ${listed.length === 1 ? 'it' : 'them'}.`);
   return out;
+}
+
+// two ways of writing the same name ("Postgres" and "PostgreSQL", "k8s" and "Kubernetes"),
+// not two related things under one skill ("Scrum" and "agile methods")
+function variants(a: string, b: string): boolean {
+  const [x, y] = [a, b].map((s) => plain(s).replace(/[\s.\-/]/g, '')).sort((p, q) => p.length - q.length);
+  if (x === y) return false;
+  return y.startsWith(x) || x.length <= 3;
 }
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);

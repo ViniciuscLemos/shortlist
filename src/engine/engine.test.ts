@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { skillsIn } from './find';
 import { readJob } from './job';
 import { analyze } from './match';
+import { reportText } from './plaintext';
 import { experienceMonths, readResume } from './resume';
 import { SAMPLE_JOB, SAMPLE_RESUME } from './samples';
 
@@ -138,5 +139,21 @@ describe('the match', () => {
 
   it('an empty ad says there is nothing to compare', () => {
     expect(analyze(SAMPLE_RESUME, 'Vaga de atendimento ao público').verdict).toContain('nothing to compare');
+  });
+});
+
+describe('the report as text', () => {
+  const text = reportText(analyze(SAMPLE_RESUME, SAMPLE_JOB, NOW), { shown: 'Skills shown' });
+
+  it('lists every skill with a mark', () => {
+    expect(text).toMatch(/^\d+\/100\. /);
+    expect(text).toContain('✓ React');
+    expect(text).toContain('~ AWS (only in a list)');
+    expect(text).toContain('✗ Kubernetes (missing)');
+  });
+
+  it('ends with what to fix, numbered', () => {
+    expect(text).toMatch(/To fix:\n  1\. /);
+    expect(text).toContain('Skills shown. Agile, AWS');
   });
 });

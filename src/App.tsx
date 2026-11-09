@@ -1,6 +1,7 @@
 import { useMemo, useState, type KeyboardEvent } from 'react';
 import type { Weight } from './engine/job';
 import { analyze, type Report, type SkillResult } from './engine/match';
+import { reportText } from './engine/plaintext';
 import { SAMPLE_JOB, SAMPLE_RESUME } from './engine/samples';
 import { pdfText } from './pdf';
 
@@ -174,6 +175,20 @@ function SkillRow({ s }: { s: SkillResult }) {
   );
 }
 
+function CopyText({ report }: { report: Report }) {
+  const [done, setDone] = useState(false);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(reportText(report, CHECK_NAME));
+      setDone(true);
+      setTimeout(() => setDone(false), 2000);
+    } catch {
+      // no clipboard (old browser, or not allowed): nothing to do but not pretend it worked
+    }
+  }
+  return <button type="button" className="link copy" onClick={copy}>{done ? 'copied' : 'copy as text'}</button>;
+}
+
 function ReportView({ report }: { report: Report }) {
   const { years, level } = report;
   return (
@@ -181,6 +196,7 @@ function ReportView({ report }: { report: Report }) {
       <div className="score-line">
         <p className="score"><span>{report.score}</span><small>/100</small></p>
         <p className="verdict">{report.verdict}</p>
+        <CopyText report={report} />
       </div>
 
       {(years.asked || level) && (
