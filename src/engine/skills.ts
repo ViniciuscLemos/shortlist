@@ -36,6 +36,10 @@ export const SKILLS: Skill[] = [
   s('html', 'HTML', 'language', 'html5'),
   s('css', 'CSS', 'language', 'css3', 'sass', 'scss'),
   s('bash', 'Shell script', 'language', 'bash', 'shell', 'powershell'),
+  s('r', 'R', 'language', '=R', 'linguagem r', 'r language', 'rstudio'),
+  s('scala', 'Scala', 'language'),
+  s('dart', 'Dart', 'language', '=Dart'),
+  s('elixir', 'Elixir', 'language'),
 
   // frameworks and libraries
   s('react', 'React', 'framework', 'react.js', 'reactjs'),
@@ -59,6 +63,14 @@ export const SKILLS: Skill[] = [
   s('jest', 'Jest', 'framework'),
   s('playwright', 'Playwright', 'framework'),
   s('cypress', 'Cypress', 'framework'),
+  s('selenium', 'Selenium', 'framework'),
+  s('svelte', 'Svelte', 'framework', 'sveltekit'),
+  s('redux', 'Redux', 'framework', 'redux toolkit', 'zustand'),
+  s('prisma', 'Prisma', 'framework', 'prisma orm'),
+  s('hibernate', 'Hibernate', 'framework', 'jpa', 'spring data'),
+  s('rails', 'Ruby on Rails', 'framework', 'rails', 'ror'),
+  s('numpy', 'NumPy', 'framework'),
+  s('pytorch', 'PyTorch', 'framework', 'tensorflow', 'keras', 'scikit-learn', 'sklearn'),
 
   // data
   s('postgres', 'PostgreSQL', 'data', 'postgres', 'postgre'),
@@ -72,6 +84,15 @@ export const SKILLS: Skill[] = [
   s('kafka', 'Kafka', 'data', 'apache kafka'),
   s('rabbitmq', 'RabbitMQ', 'data', 'rabbit'),
   s('powerbi', 'Power BI', 'data', 'powerbi'),
+  s('tableau', 'Tableau', 'data'),
+  s('looker', 'Looker', 'data', 'looker studio', 'data studio', 'metabase'),
+  s('spark', 'Spark', 'data', 'apache spark', 'pyspark', 'databricks'),
+  s('airflow', 'Airflow', 'data', 'apache airflow'),
+  s('dbt', 'dbt', 'data', 'data build tool'),
+  s('warehouse', 'Data warehouse', 'data', 'data warehouse', 'bigquery', 'snowflake', 'redshift', 'data lake'),
+  s('etl', 'ETL', 'data', 'elt', 'pipelines de dados', 'data pipelines', 'pipeline de dados'),
+  s('statistics', 'Statistics', 'data', 'estatistica', 'testes a/b', 'a/b testing', 'a/b tests'),
+  s('firebase', 'Firebase', 'data', 'firestore', 'supabase'),
   s('excel', 'Excel', 'data', '=Excel', 'planilhas'),
   s('ml', 'Machine learning', 'data', 'aprendizado de maquina', '=ML'),
   s('llm', 'LLMs', 'data', 'llm', 'openai', 'chatgpt', 'ia generativa', 'generative ai', 'gpt'),
@@ -87,6 +108,10 @@ export const SKILLS: Skill[] = [
   s('git', 'Git', 'cloud', 'github', 'gitlab', 'bitbucket'),
   s('cicd', 'CI/CD', 'cloud', 'ci cd', 'github actions', 'gitlab ci', 'jenkins', 'integracao continua', 'continuous integration'),
   s('n8n', 'n8n', 'cloud', 'zapier', 'make.com'),
+  s('nginx', 'Nginx', 'cloud', 'apache http'),
+  s('observability', 'Observability', 'cloud', 'observabilidade', 'monitoramento', 'monitoring', 'grafana', 'prometheus', 'datadog', 'new relic', 'sentry'),
+  s('vercel', 'Vercel', 'cloud', 'netlify', 'heroku', 'render.com'),
+  s('jira', 'Jira', 'cloud', 'confluence', 'trello'),
 
   // practices
   s('rest', 'REST APIs', 'practice', '=REST', 'restful', 'api rest', 'apis rest', 'rest api', 'rest apis'),
@@ -99,6 +124,10 @@ export const SKILLS: Skill[] = [
   s('ux', 'UX/UI', 'practice', '=UX', '=UI', 'ux/ui', 'ui/ux', 'figma', 'user experience'),
   s('accessibility', 'Accessibility', 'practice', 'acessibilidade', 'wcag', 'a11y'),
   s('data-modeling', 'Data modeling', 'practice', 'modelagem de dados'),
+  s('ddd', 'DDD', 'practice', 'domain driven design', 'domain-driven design'),
+  s('messaging', 'Event-driven systems', 'practice', 'mensageria', 'event driven', 'orientado a eventos', 'filas', 'message queues', 'pub/sub', 'sqs'),
+  s('performance', 'Performance', 'practice', 'otimizacao de performance', 'performance optimization', 'web vitals', 'caching'),
+  s('code-review', 'Code review', 'practice', 'revisao de codigo', 'code reviews', 'pull requests'),
 
   // people skills
   s('communication', 'Communication', 'soft', 'comunicacao', 'boa comunicacao', 'comunicativo'),
@@ -110,6 +139,8 @@ export const SKILLS: Skill[] = [
   // languages people speak
   s('english', 'English', 'tongue', 'ingles', 'ingles avancado', 'ingles fluente', 'fluent english'),
   s('spanish', 'Spanish', 'tongue', 'espanhol'),
+  s('french', 'French', 'tongue', 'frances'),
+  s('german', 'German', 'tongue', 'alemao'),
 ];
 
 export const KIND_LABEL: Record<SkillKind, string> = {

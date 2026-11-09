@@ -24,6 +24,17 @@ describe('finding skills in a line', () => {
     expect(ids('express yourself, swift answers')).toEqual([]);
     expect(ids('Cientista de dados')).toEqual([]);
   });
+
+  it('knows the data tools by their everyday names', () => {
+    expect(ids('pipelines de dados com PySpark no Databricks e Airflow')).toEqual(['airflow', 'etl', 'spark']);
+    expect(ids('modelos em dbt sobre o BigQuery')).toEqual(['dbt', 'warehouse']);
+    expect(ids('Python e R para estatística')).toEqual(['python', 'r', 'statistics']);
+  });
+
+  it('a single letter only counts written as a name', () => {
+    // "r" is a letter in plenty of places; "R" next to other tools is the language
+    expect(ids('r. das flores, 120')).toEqual([]);
+  });
 });
 
 describe('reading the job ad', () => {
