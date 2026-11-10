@@ -22,6 +22,19 @@ function remember(key: string, value: string) {
   }
 }
 
+// After comparing, the report is where the reading goes: scroll to it (without the glide for
+// people who asked the system for less motion) and move the focus there, so a screen reader
+// starts on the score instead of staying on the button.
+function showReport() {
+  requestAnimationFrame(() => {
+    const el = document.getElementById('report');
+    if (!el) return;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: still ? 'auto' : 'smooth' });
+    el.focus({ preventScroll: true });
+  });
+}
+
 export default function App() {
   const [resume, setResume] = useState(() => remembered('shortlist.resume'));
   const [job, setJob] = useState(() => remembered('shortlist.job'));
@@ -47,7 +60,7 @@ export default function App() {
     remember('shortlist.job', job);
     setReport(analyze(resume, job, new Date(), lang));
     setCompared({ resume, job });
-    requestAnimationFrame(() => document.getElementById('report')?.scrollIntoView({ behavior: 'smooth' }));
+    showReport();
   }
 
   async function openPdf(file: File | undefined) {
@@ -66,6 +79,7 @@ export default function App() {
     setJob(SAMPLE_JOB);
     setReport(analyze(SAMPLE_RESUME, SAMPLE_JOB, new Date(), lang));
     setCompared({ resume: SAMPLE_RESUME, job: SAMPLE_JOB });
+    showReport();
   }
 
   // ctrl+enter (cmd+enter on a Mac) from either sheet, so you don't have to reach for the button
@@ -185,7 +199,7 @@ function CopyText({ report, T }: { report: Report; T: Texts }) {
 function ReportView({ report, T }: { report: Report; T: Texts }) {
   const { years, level } = report;
   return (
-    <section className="report" id="report" aria-label={T.comparison}>
+    <section className="report" id="report" aria-label={T.comparison} tabIndex={-1}>
       <div className="score-line">
         <p className="score"><span>{report.score}</span><small>/100</small></p>
         <p className="verdict">{report.verdict}</p>

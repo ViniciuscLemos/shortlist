@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/pdf.ts","./src/ui.ts","./src/vite-env.d.ts","./src/engine/engine.test.ts","./src/engine/find.ts","./src/engine/job.ts","./src/engine/match.ts","./src/engine/plaintext.ts","./src/engine/resume.ts","./src/engine/samples.ts","./src/engine/skills.ts","./src/engine/text.ts","./src/engine/words.ts"],"version":"5.9.3"}

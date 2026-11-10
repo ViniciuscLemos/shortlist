@@ -144,3 +144,23 @@ footer { margin: 70px 0 30px; padding-top: 14px; border-top: 1px solid var(--rul
 .langs button { background: none; border: 0; padding: 0; font: inherit; color: var(--ink-faint); cursor: pointer; }
 .langs button[aria-pressed='true'] { color: var(--ink); text-decoration: underline; text-decoration-color: var(--marker); text-decoration-thickness: 3px; text-underline-offset: 4px; }
 @media print { .langs { display: none; } }
+
+.report:focus { outline: none; }
+
+/* on a phone: text the size iOS won't zoom into, and small links with a finger-sized hit area
+   (the padding grows the target, the negative margin keeps the layout where it was) */
+@media (pointer: coarse) {
+  .sheet textarea { font-size: 16px; }
+  .link, .langs button, footer a, .sheet-foot .link {
+    display: inline-block;
+    padding: 10px 4px;
+    margin: -10px -4px;
+  }
+  .langs { gap: 22px; }
+  .report-tools { gap: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
