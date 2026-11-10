@@ -1,0 +1,127 @@
+// The words of the page itself, in both languages. The report's sentences are in engine/words.ts.
+import type { Weight } from './engine/job';
+import type { Lang } from './engine/words';
+
+export const UI = {
+  en: {
+    title: 'Read your resume the way the person hiring will.',
+    lede: "Paste your resume and the job ad. It marks what they ask for, what your resume shows, what's missing, and what to fix before sending. Nothing leaves this browser.",
+    texts: 'The two texts',
+    resume: 'Your resume',
+    resumeHint: 'Paste the text of your resume here, the whole thing, headings included.',
+    or: 'or',
+    pickPdf: 'pick the PDF',
+    reading: (name: string) => `Reading ${name}…`,
+    scanned: "This PDF is a picture of the pages (a scan), so there's no text in it to read. Paste the text instead.",
+    pdfFailed: "Couldn't read that PDF. Paste the text instead.",
+    words: (n: number) => `${n} words`,
+    job: 'The job ad',
+    jobHint: "Paste the ad, with its 'Requirements' and 'Nice to have' parts if it has them.",
+    compare: 'Compare them',
+    example: 'or try it with an example',
+    shortcut: 'ctrl + enter works too',
+    stale: 'You changed the text since this was made.',
+    again: 'Compare again',
+    madeBy: 'Made by',
+    howItReads: 'how it reads',
+    comparison: 'The comparison',
+    copy: 'copy as text',
+    copied: 'copied',
+    print: 'print',
+    level: { intern: 'an internship', junior: 'a junior role', mid: 'a mid-level role', senior: 'a senior role', lead: 'a lead role' } as Record<string, string>,
+    readsAs: (level: string) => `It reads as ${level}. `,
+    askYears: (asked: number, have: number) => `They ask for ${asked}+ years; the dates in your experience add up to ${have ? `about ${have}` : 'less than one'}.`,
+    haveYears: (have: number) => `The dates in your experience add up to about ${have} years.`,
+    groups: [
+      ['required', 'What they require', 'From the "requirements" part of the ad.'],
+      ['mentioned', 'What else they mention', 'In the description of the role, not as a requirement.'],
+      ['nice', 'What would be a plus', 'Nice to have. Missing these rarely costs the interview.'],
+    ] as [Weight, string, string][],
+    of: (found: number, all: number) => `${found} of ${all}`,
+    notInResume: 'not in your resume',
+    adSays: 'the ad says',
+    onlyListed: 'only in a list, never shown being used',
+    before: 'Before you send it',
+    nothingToFix: "Nothing to fix in the resume itself. What's left is the match above.",
+    fine: 'Already fine:',
+    checks: {
+      contact: 'Contact at the top',
+      links: 'A link to your work',
+      experience: 'Experience under its own heading',
+      length: 'A length people read',
+      numbers: 'Numbers in what you did',
+      weak: 'No "responsible for"',
+      verbs: 'Lines that start with an action',
+      shown: 'Skills shown, not only listed',
+      spelling: 'Their words for things',
+    } as Record<string, string>,
+    text: { required: 'Required', mentioned: 'Also mentioned', nice: 'A plus', missing: 'missing', listed: 'only in a list', fix: 'To fix' },
+  },
+  pt: {
+    title: 'Leia seu currículo como quem vai contratar.',
+    lede: 'Cole seu currículo e a vaga. Ele marca o que pedem, o que seu currículo mostra, o que falta e o que arrumar antes de mandar. Nada sai deste navegador.',
+    texts: 'Os dois textos',
+    resume: 'Seu currículo',
+    resumeHint: 'Cole aqui o texto do seu currículo, inteiro, com os títulos.',
+    or: 'ou',
+    pickPdf: 'escolha o PDF',
+    reading: (name: string) => `Lendo ${name}…`,
+    scanned: 'Este PDF é uma foto das páginas (escaneado), então não tem texto pra ler. Cole o texto.',
+    pdfFailed: 'Não deu pra ler esse PDF. Cole o texto.',
+    words: (n: number) => `${n} palavras`,
+    job: 'A vaga',
+    jobHint: "Cole a vaga, com as partes de 'Requisitos' e 'Diferenciais' se tiver.",
+    compare: 'Comparar',
+    example: 'ou veja com um exemplo',
+    shortcut: 'ctrl + enter também funciona',
+    stale: 'Você mudou o texto depois de comparar.',
+    again: 'Comparar de novo',
+    madeBy: 'Feito por',
+    howItReads: 'como ele lê',
+    comparison: 'A comparação',
+    copy: 'copiar como texto',
+    copied: 'copiado',
+    print: 'imprimir',
+    level: { intern: 'um estágio', junior: 'uma vaga júnior', mid: 'uma vaga pleno', senior: 'uma vaga sênior', lead: 'uma vaga de liderança' } as Record<string, string>,
+    readsAs: (level: string) => `Parece ${level}. `,
+    askYears: (asked: number, have: number) => `Pedem ${asked}+ anos; as datas da sua experiência somam ${have ? `uns ${have}` : 'menos de um'}.`,
+    haveYears: (have: number) => `As datas da sua experiência somam uns ${have} anos.`,
+    groups: [
+      ['required', 'O que exigem', 'Da parte de "requisitos" da vaga.'],
+      ['mentioned', 'O que mais citam', 'Na descrição da vaga, não como requisito.'],
+      ['nice', 'O que seria um diferencial', 'Desejável. Raramente faltar isso tira a entrevista.'],
+    ] as [Weight, string, string][],
+    of: (found: number, all: number) => `${found} de ${all}`,
+    notInResume: 'não está no currículo',
+    adSays: 'a vaga diz',
+    onlyListed: 'só numa lista, sem aparecer em uso',
+    before: 'Antes de mandar',
+    nothingToFix: 'Nada pra arrumar no currículo em si. O que falta é o da comparação acima.',
+    fine: 'Já está bom:',
+    checks: {
+      contact: 'Contato no topo',
+      links: 'Um link do seu trabalho',
+      experience: 'Experiência com título próprio',
+      length: 'Um tamanho que se lê',
+      numbers: 'Números no que você fez',
+      weak: 'Sem "responsável por"',
+      verbs: 'Linhas que começam com ação',
+      shown: 'Habilidades mostradas, não só listadas',
+      spelling: 'As palavras deles',
+    } as Record<string, string>,
+    text: { required: 'Exigido', mentioned: 'Também citado', nice: 'Diferencial', missing: 'falta', listed: 'só numa lista', fix: 'Pra arrumar' },
+  },
+} satisfies Record<Lang, unknown>;
+
+export type Texts = (typeof UI)['en'];
+
+/** Portuguese for a browser in Portuguese, English otherwise, unless the person picked one. */
+export function firstLang(): Lang {
+  try {
+    const picked = localStorage.getItem('shortlist.lang');
+    if (picked === 'en' || picked === 'pt') return picked;
+  } catch {
+    // no storage: fall back to the browser's language
+  }
+  return navigator.language.toLowerCase().startsWith('pt') ? 'pt' : 'en';
+}

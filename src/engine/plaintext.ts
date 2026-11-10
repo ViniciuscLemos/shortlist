@@ -1,27 +1,29 @@
 import type { Report } from './match';
 
-const TITLES = { required: 'Required', mentioned: 'Also mentioned', nice: 'A plus' } as const;
+export interface TextWords { required: string; mentioned: string; nice: string; missing: string; listed: string; fix: string }
+
+const EN: TextWords = { required: 'Required', mentioned: 'Also mentioned', nice: 'A plus', missing: 'missing', listed: 'only in a list', fix: 'To fix' };
 
 /**
  * The report as plain text, to paste into notes or send to someone who's helping
  * with the resume. Short on purpose: what's there, what's missing, what to fix.
  */
-export function reportText(report: Report, names: Record<string, string>): string {
+export function reportText(report: Report, names: Record<string, string>, W: TextWords = EN): string {
   const out = [`${report.score}/100. ${report.verdict}`, ''];
   for (const weight of ['required', 'mentioned', 'nice'] as const) {
     const list = report.skills.filter((s) => s.weight === weight);
     if (!list.length) continue;
-    out.push(`${TITLES[weight]}:`);
+    out.push(`${W[weight]}:`);
     for (const s of list) {
       const mark = !s.evidence ? '✗' : s.onlyListed ? '~' : '✓';
-      const note = !s.evidence ? 'missing' : s.onlyListed ? 'only in a list' : '';
+      const note = !s.evidence ? W.missing : s.onlyListed ? W.listed : '';
       out.push(`  ${mark} ${s.skill.name}${note ? ` (${note})` : ''}`);
     }
     out.push('');
   }
   const todo = report.checks.filter((c) => !c.ok);
   if (todo.length) {
-    out.push('To fix:');
+    out.push(`${W.fix}:`);
     todo.forEach((c, i) => out.push(`  ${i + 1}. ${names[c.id] ?? c.id}. ${c.advice}`));
   }
   return out.join('\n').trimEnd() + '\n';

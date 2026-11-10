@@ -137,3 +137,10 @@ footer { margin: 70px 0 30px; padding-top: 14px; border-top: 1px solid var(--rul
   .skill mark { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 .report-tools { display: flex; gap: 14px; margin-left: auto; }
+
+.top-line { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 22px; }
+.top-line .wordmark { margin: 0; }
+.langs { display: flex; gap: 14px; font-size: 13px; }
+.langs button { background: none; border: 0; padding: 0; font: inherit; color: var(--ink-faint); cursor: pointer; }
+.langs button[aria-pressed='true'] { color: var(--ink); text-decoration: underline; text-decoration-color: var(--marker); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+@media print { .langs { display: none; } }
