@@ -31,6 +31,10 @@ Two sheets side by side, the resume and the ad. The resume can also be picked as
 
 The report reads like a note from someone who read both: what they require, with the line of your resume that shows each one highlighted (or "only in a list"), the missing ones underlined in red, and a numbered list of what to fix before sending. The two texts stay in the browser's storage for the next visit, and nowhere else.
 
+The page comes in English and in Portuguese, picked from the browser's language and switched at the top. The report's sentences live in their own file, apart from the rules, so a translation can't change a score: both languages get the same 81.
+
+<img src="docs/report-pt.png" alt="The same report in Portuguese: Combina bem, todo requisito está no currículo, mas AWS só numa lista" width="640">
+
 A few small things that make it nicer to use more than once: Ctrl+Enter compares from either sheet, the report says when you've changed the text since it was made, "copy as text" gives a plain version to paste in your notes or send to whoever is helping with the resume, and printing gives just the report, on white.
 
 <img src="docs/report-dark.png" alt="The report in dark mode" width="640">
