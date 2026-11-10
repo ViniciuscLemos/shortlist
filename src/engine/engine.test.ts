@@ -157,3 +157,22 @@ describe('the report as text', () => {
     expect(text).toContain('Skills shown. Agile, AWS');
   });
 });
+
+describe('in Portuguese', () => {
+  const report = analyze(SAMPLE_RESUME, SAMPLE_JOB, NOW, 'pt');
+
+  it('says the same thing, with the same score', () => {
+    expect(report.score).toBe(analyze(SAMPLE_RESUME, SAMPLE_JOB, NOW).score);
+    expect(report.verdict).toBe('Combina bem: todo requisito está no currículo, mas AWS só numa lista.');
+  });
+
+  it('the advice reads naturally, singular and plural', () => {
+    const weak = report.checks.find((c) => c.id === 'weak')!;
+    expect(weak.advice).toContain('2 linhas começam com "Responsável por manter…"');
+    const shown = report.checks.find((c) => c.id === 'shown')!;
+    expect(shown.advice).toContain('Agile, AWS são pedidos mas só aparecem numa lista');
+    const r = analyze('Experiência\n- Built the reports on Postgres', 'Requisitos:\n- PostgreSQL', NOW, 'pt');
+    expect(r.checks.find((c) => c.id === 'spelling')!.advice).toContain('Eles escrevem "PostgreSQL", você escreve "Postgres"');
+  });
+});
+
