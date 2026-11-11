@@ -39,6 +39,13 @@ A few small things that make it nicer to use more than once: Ctrl+Enter compares
 
 <img src="docs/report-dark.png" alt="The report in dark mode" width="640">
 
+## On a phone, with a keyboard, with a screen reader
+
+- Works down to a 360px screen without anything sliding sideways. The text boxes are 16px so iOS doesn't zoom in when you tap them, and the small links have a finger-sized hit area.
+- After comparing, the focus moves to the report, so a screen reader starts at the score.
+- If the system is set to reduce motion, the page jumps to the report instead of gliding.
+- Checked with axe in light and dark mode, on a phone and on a desktop.
+
 ## Running
 
 ```bash
