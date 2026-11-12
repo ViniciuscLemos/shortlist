@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import { analyze, type Report, type SkillResult } from './engine/match';
+import { keepAd, rankAds, type SavedAd } from './engine/ads';
 import { suggestLine } from './engine/suggest';
 import type { Lang } from './engine/words';
 import { reportText } from './engine/plaintext';
@@ -49,6 +50,11 @@ export default function App() {
   const stale = !!report && (compared.resume !== resume || compared.job !== job);
 
   const ready = resume.trim().length > 40 && job.trim().length > 40;
+  // the ads kept to compare against each other, newest first
+  const [ads, setAds] = useState<SavedAd[]>(() => {
+    try { return JSON.parse(remembered('shortlist.ads') || '[]'); } catch { return []; }
+  });
+  useEffect(() => remember('shortlist.ads', JSON.stringify(ads)), [ads]);
 
   // the page, the report and the browser tab all follow the language picked
   useEffect(() => {
@@ -148,6 +154,12 @@ export default function App() {
           </p>
         )}
         {report && <ReportView report={report} T={T} />}
+        {report && (
+          <Ads ads={ads} resume={compared.resume} job={compared.job} lang={lang} T={T}
+            onKeep={() => setAds((list) => keepAd(list, compared.job))}
+            onRemove={(id) => setAds((list) => list.filter((x) => x.id !== id))}
+            onOpen={(ad) => { setJob(ad.text); remember('shortlist.job', ad.text); setReport(analyze(resume, ad.text, new Date(), lang)); setCompared({ resume, job: ad.text }); showReport(); }} />
+        )}
       </main>
 
       <footer>
@@ -207,6 +219,48 @@ function SkillRow({ s, T }: { s: SkillResult; T: Texts }) {
       </span>
       {s.onlyListed && <Suggest s={s} T={T} />}
     </li>
+  );
+}
+
+// The kept ads, best fit first, each with its score, the required skills it found and the
+// ones it didn't. The one open now is marked, the others open with one click.
+function Ads({ ads, resume, job, lang, T, onKeep, onRemove, onOpen }: {
+  ads: SavedAd[]; resume: string; job: string; lang: Lang; T: Texts;
+  onKeep: () => void; onRemove: (id: string) => void; onOpen: (ad: SavedAd) => void;
+}) {
+  const ranked = useMemo(() => rankAds(resume, ads, new Date(), lang), [resume, ads, lang]);
+  const same = (a: string, b: string) => a.replace(/\s+/g, ' ').trim() === b.replace(/\s+/g, ' ').trim();
+  const kept = ads.some((a) => same(a.text, job));
+  return (
+    <section className="ads" aria-labelledby="ads-title">
+      <h2 id="ads-title">{T.adsTitle}</h2>
+      <p className="note">{T.adsNote}</p>
+      {kept ? <p className="ads-kept">{T.adKept}</p> : <button type="button" className="link" onClick={onKeep}>{T.keepAd}</button>}
+      {ranked.length > 0 && (
+        <ol className="ads-list">
+          {ranked.map((r) => {
+            const here = same(r.ad.text, job);
+            return (
+              <li key={r.ad.id} className={here ? 'here' : ''}>
+                <span className="ads-score">{r.score}</span>
+                <span className="ads-main">
+                  <strong>{r.ad.title}</strong>
+                  <span className="ads-detail">
+                    {T.adsRequired(r.required.found, r.required.total)}
+                    {r.missing.length > 0 && <> · {T.adsMissing}: {r.missing.slice(0, 4).join(', ')}{r.missing.length > 4 ? '…' : ''}</>}
+                  </span>
+                </span>
+                <span className="ads-actions">
+                  {here ? <span className="ads-here">{T.adsHere}</span>
+                    : <button type="button" className="link" onClick={() => onOpen(r.ad)}>{T.adsCompare}</button>}
+                  <button type="button" className="link" onClick={() => onRemove(r.ad.id)} aria-label={`${T.adsRemove}: ${r.ad.title}`}>{T.adsRemove}</button>
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </section>
   );
 }
 

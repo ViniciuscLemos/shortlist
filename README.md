@@ -25,6 +25,10 @@ For each skill the resume doesn't show, or only lists, there's a folded **"how t
 
 <img src="docs/checks.png" alt="The list of what to fix: numbers in what you did, no 'responsible for', their words for things (they write PostgreSQL, you write Postgres), and skills only listed" width="620">
 
+**Your ads.** Looking for a job means reading ten ads, not one. Each ad compared can be kept in a list, and the list ranks them against the resume: the score, how many of the required skills it shows, and which ones it doesn't (*"0 of 3 required · missing: Java, Spring Boot, Kafka"*). One click opens any of them as the current ad. The scores are worked out again each time, so improving the resume moves every ad up. The ads stay in the browser, like everything else.
+
+<img src="docs/ads.png" alt="Three kept ads ranked: a full-stack role at 81 with 7 of 7 required, a frontend role at 43 missing CSS and Jest, and a Java backend role at 0" width="620">
+
 ## Why no AI (yet)
 
 Everything runs in the browser: the resume never leaves the computer, it's instant, it's free to host, and when it says "Kubernetes is missing" you can see exactly which line of the ad asked for it. An AI step to rewrite the weak lines is planned on top of this, as an option.

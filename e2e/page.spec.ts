@@ -71,3 +71,27 @@ function storedZip(name: string, text: string): Buffer {
   end.writeUInt32LE(30 + file.length + data.length, 16);
   return Buffer.concat([local, file, data, dir, file, end]);
 }
+
+test('two ads kept, ranked, and either one opens', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('button', { name: 'or try it with an example' }).click();
+  await page.getByRole('button', { name: 'keep this ad in the list' }).click();
+  await expect(page.getByText('this ad is in the list')).toBeVisible();
+
+  await page.locator('textarea').nth(1).fill('Backend developer (Java)\nRequirements:\n- Java\n- Spring Boot\n- Kafka\n- 5+ years of experience');
+  await page.getByRole('button', { name: 'Compare them' }).click();
+  await page.getByRole('button', { name: 'keep this ad in the list' }).click();
+
+  const rows = page.locator('.ads-list li');
+  await expect(rows).toHaveCount(2);
+  // the example fits better, so it comes first; the Java one is open now and says what's missing
+  await expect(rows.nth(1)).toContainText('Backend developer (Java)');
+  await expect(rows.nth(1)).toContainText('open now');
+  await expect(rows.nth(1)).toContainText('Kafka');
+  await rows.first().getByRole('button', { name: 'compare with it' }).click();
+  await expect(rows.first()).toContainText('open now');
+  await expect(page.locator('textarea').nth(1)).not.toHaveValue(/Kafka/);
+
+  await rows.nth(1).getByRole('button', { name: /remove/ }).click();
+  await expect(rows).toHaveCount(1);
+});

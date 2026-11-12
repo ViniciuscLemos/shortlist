@@ -176,3 +176,23 @@ footer { margin: 70px 0 30px; padding-top: 14px; border-top: 1px solid var(--rul
 .suggest .link { font-size: 13px; }
 @media print { .suggest { display: none; } }
 @media (pointer: coarse) { .suggest summary { padding: 8px 0; } }
+
+/* the kept ads, best fit first */
+.ads { margin-top: 48px; max-width: 760px; }
+.ads h2 { font-size: 24px; margin-bottom: 4px; }
+.ads .note { margin-bottom: 10px; }
+.ads-kept { font-size: 14px; color: var(--green); margin: 0; }
+.ads-list { list-style: none; margin: 14px 0 0; padding: 0; border-top: 1px solid var(--rule); }
+.ads-list li { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.ads-list li.here { background: linear-gradient(90deg, color-mix(in srgb, var(--marker) 22%, transparent), transparent 70%); }
+.ads-score { font-family: var(--mono); font-size: 24px; text-align: right; }
+.ads-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ads-main strong { overflow-wrap: anywhere; }
+.ads-detail { font-size: 13px; color: var(--ink-soft); }
+.ads-actions { display: flex; gap: 14px; font-size: 14px; }
+.ads-here { color: var(--ink-faint); }
+@media (max-width: 560px) {
+  .ads-list li { grid-template-columns: 44px minmax(0, 1fr); }
+  .ads-actions { grid-column: 2; }
+}
+@media print { .ads { display: none; } }

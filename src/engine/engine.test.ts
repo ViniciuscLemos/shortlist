@@ -191,3 +191,22 @@ describe('a line to start from', () => {
     expect(suggestLine(SKILLS.find((s) => s.id === 'react')!, 'pt')).toMatch(/^Construí .* com React/);
   });
 });
+
+describe('several ads against one resume', () => {
+  it('ranks them by score and says what each one misses', async () => {
+    const { keepAd, rankAds, adTitle } = await import('./ads');
+    const { SAMPLE_JOB, SAMPLE_RESUME } = await import('./samples');
+    const java = 'Backend developer (Java)\nRequirements:\n- Java\n- Spring Boot\n- Kafka\n- 5+ years';
+    let ads = keepAd([], SAMPLE_JOB, 'a');
+    ads = keepAd(ads, java, 'b');
+    // the same ad again, with different spacing, isn't kept twice
+    expect(keepAd(ads, `  ${java.replace(/\n/g, '\n\n')} `, 'c')).toHaveLength(2);
+    const ranked = rankAds(SAMPLE_RESUME, ads);
+    expect(ranked.map((r) => r.ad.id)).toEqual(['a', 'b']);
+    expect(ranked[0]!.score).toBeGreaterThan(ranked[1]!.score);
+    expect(ranked[1]!.missing).toEqual(expect.arrayContaining(['Java', 'Kafka']));
+    expect(ranked[1]!.required.total).toBeGreaterThanOrEqual(3);
+    expect(adTitle(java)).toBe('Backend developer (Java)');
+    expect(adTitle('x'.repeat(200))).toHaveLength(70);
+  });
+});
