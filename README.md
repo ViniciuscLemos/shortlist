@@ -19,6 +19,10 @@ A score from 0 to 100 (required counts 3, mentioned 2, a plus 1), a sentence abo
 
 That last one is about the filters many companies put in front of the recruiter: if the ad says "PostgreSQL" and the resume says "Postgres", a person reads it as the same thing, but a filter matching words may not. It only flags real variants of a name (Postgres / PostgreSQL, k8s / Kubernetes, JS / JavaScript), not two related things under one skill like "Scrum" and "agile methods".
 
+For each skill the resume doesn't show, or only lists, there's a folded **"how to show it"** with a line to start from: what, with what, and what came of it, with brackets for what only you know (*"Put [what] in production on Kubernetes, [what came of it: deploys in x minutes...]"*). One shape per kind of skill, in English and Portuguese. It says plainly that it's for things that are true; if you never used it, the honest fix is to leave it out.
+
+<img src="docs/suggest.png" alt="Kubernetes, not in your resume, with 'how to show it' open: a line with brackets to fill and a button to copy it" width="360">
+
 <img src="docs/checks.png" alt="The list of what to fix: numbers in what you did, no 'responsible for', their words for things (they write PostgreSQL, you write Postgres), and skills only listed" width="620">
 
 ## Why no AI (yet)
@@ -52,6 +56,7 @@ A few small things that make it nicer to use more than once: Ctrl+Enter compares
 npm install
 npm run dev     # the page on localhost:5173
 npm test        # the engine's tests
+npm run build && npm run e2e   # the built page in a real browser, desktop and phone, with axe
 ```
 
 It's deployed to GitHub Pages by the same Action that runs the tests.
