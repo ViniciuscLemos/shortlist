@@ -30,7 +30,7 @@ jobs:
       # the built page in a real browser, desktop and phone, with an accessibility check
       - run: npx playwright install --with-deps chromium
       - run: npm run e2e
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         if: github.event_name == 'push'
         with:
           path: dist
