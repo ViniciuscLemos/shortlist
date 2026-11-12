@@ -27,7 +27,7 @@ Everything runs in the browser: the resume never leaves the computer, it's insta
 
 ## The page
 
-Two sheets side by side, the resume and the ad. The resume can also be picked as a PDF: pdf.js reads it right there in the browser, and it only loads when someone picks a file, so the page stays light. A scanned PDF has no text in it, and it says so instead of failing quietly.
+Two sheets side by side, the resume and the ad. The resume can also be picked as a PDF: pdf.js reads it right there in the browser, and it only loads when someone picks a file, so the page stays light. A scanned PDF has no text in it, and it says so instead of failing quietly. A Word file (.docx) works too, without a library: a .docx is a zip, so the page finds `word/document.xml` in it, inflates it with the browser's own `DecompressionStream` and keeps one line per paragraph.
 
 The report reads like a note from someone who read both: what they require, with the line of your resume that shows each one highlighted (or "only in a list"), the missing ones underlined in red, and a numbered list of what to fix before sending. The two texts stay in the browser's storage for the next visit, and nowhere else.
 
