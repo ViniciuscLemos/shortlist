@@ -176,3 +176,18 @@ describe('in Portuguese', () => {
   });
 });
 
+
+describe('a line to start from', () => {
+  it('has the skill in it and brackets to fill, in both languages', async () => {
+    const { suggestLine } = await import('./suggest');
+    const { SKILLS } = await import('./skills');
+    for (const skill of SKILLS) {
+      for (const lang of ['en', 'pt'] as const) {
+        const line = suggestLine(skill, lang);
+        expect(line.toLowerCase()).toContain(skill.name.toLowerCase());
+        expect(line).toMatch(/\[[^\]]+\]/);
+      }
+    }
+    expect(suggestLine(SKILLS.find((s) => s.id === 'react')!, 'pt')).toMatch(/^Construí .* com React/);
+  });
+});
