@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import { analyze, type Report, type SkillResult } from './engine/match';
+import { suggestLine } from './engine/suggest';
 import type { Lang } from './engine/words';
 import { reportText } from './engine/plaintext';
 import { SAMPLE_JOB, SAMPLE_RESUME } from './engine/samples';
@@ -162,6 +163,28 @@ function quote(line: string, max = 110): string {
   return line.length > max ? `${line.slice(0, max - 1).trimEnd()}…` : line;
 }
 
+// what to write when the resume doesn't show it (or only lists it): a line with brackets
+// to fill, folded so the report stays short
+function Suggest({ s, T }: { s: SkillResult; T: Texts }) {
+  const [copied, setCopied] = useState(false);
+  const line = suggestLine(s.skill, T.lang);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(line);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* the line is right there to select */ }
+  }
+  return (
+    <details className="suggest">
+      <summary>{T.howToShow}</summary>
+      <p className="suggest-note">{T.suggestNote}</p>
+      <p className="suggest-line">{line}</p>
+      <button type="button" className="link" onClick={copy}>{copied ? T.copied : T.copyLine}</button>
+    </details>
+  );
+}
+
 function SkillRow({ s, T }: { s: SkillResult; T: Texts }) {
   if (!s.evidence) {
     return (
@@ -172,6 +195,7 @@ function SkillRow({ s, T }: { s: SkillResult; T: Texts }) {
           {/* the line of the ad only helps when it says more than the name */}
           {s.line.trim().length > s.skill.name.length + 6 && <> · {T.adSays} “{quote(s.line, 80)}”</>}
         </span>
+        <Suggest s={s} T={T} />
       </li>
     );
   }
@@ -181,6 +205,7 @@ function SkillRow({ s, T }: { s: SkillResult; T: Texts }) {
       <span className="where">
         {s.onlyListed ? T.onlyListed : <>“{quote(s.evidence.line)}”</>}
       </span>
+      {s.onlyListed && <Suggest s={s} T={T} />}
     </li>
   );
 }

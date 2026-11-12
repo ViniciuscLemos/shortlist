@@ -166,3 +166,13 @@ footer { margin: 70px 0 30px; padding-top: 14px; border-top: 1px solid var(--rul
 }
 
 .noscript { max-width: 560px; margin: 40px auto; padding: 14px 18px; border-left: 3px solid currentColor; font: 16px/1.5 system-ui, sans-serif; }
+
+/* the line to start from, folded under a missing skill */
+.suggest { margin-top: 4px; font-size: 13px; }
+.suggest summary { cursor: pointer; color: var(--ink-soft); width: fit-content; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.suggest[open] summary { margin-bottom: 6px; }
+.suggest-note { margin: 0 0 6px; color: var(--ink-faint); }
+.suggest-line { margin: 0 0 6px; padding: 8px 10px; background: var(--paper-2); border-left: 2px solid var(--marker); font-size: 14px; line-height: 1.5; }
+.suggest .link { font-size: 13px; }
+@media print { .suggest { display: none; } }
+@media (pointer: coarse) { .suggest summary { padding: 8px 0; } }
