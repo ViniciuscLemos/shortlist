@@ -3,6 +3,7 @@ import { analyze, type Report, type SkillResult } from './engine/match';
 import type { Lang } from './engine/words';
 import { reportText } from './engine/plaintext';
 import { SAMPLE_JOB, SAMPLE_RESUME } from './engine/samples';
+import { docxText } from './docx';
 import { pdfText } from './pdf';
 import { firstLang, UI, type Texts } from './ui';
 
@@ -63,14 +64,16 @@ export default function App() {
     showReport();
   }
 
-  async function openPdf(file: File | undefined) {
+  async function openFile(file: File | undefined) {
     if (!file) return;
     setReading(T.reading(file.name));
+    const word = /\.docx?$/i.test(file.name) || file.type.includes('wordprocessingml');
     try {
-      setResume(await pdfText(file));
+      setResume(word ? await docxText(file) : await pdfText(file));
       setReading('');
     } catch (e) {
-      setReading(e instanceof Error && e.message.includes('scan') ? T.scanned : T.pdfFailed);
+      if (word) setReading(T.docxFailed);
+      else setReading(e instanceof Error && e.message.includes('scan') ? T.scanned : T.pdfFailed);
     }
   }
 
@@ -117,8 +120,8 @@ export default function App() {
               placeholder={T.resumeHint} />
             <span className="sheet-foot">
               <span className="file">
-                {T.or} <label className="link">{T.pickPdf}<input type="file" accept="application/pdf,.pdf" hidden
-                  onChange={(e) => { openPdf(e.target.files?.[0]); e.target.value = ''; }} /></label>
+                {T.or} <label className="link">{T.pickPdf}<input type="file" accept="application/pdf,.pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden
+                  onChange={(e) => { openFile(e.target.files?.[0]); e.target.value = ''; }} /></label>
                 {reading && <span role="status"> · {reading}</span>}
               </span>
               <span className="count">{words.resume ? T.words(words.resume) : ''}</span>
