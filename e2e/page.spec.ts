@@ -46,9 +46,40 @@ for (const scheme of ['light', 'dark'] as const) {
     expect(await audit(page)).toEqual([]);
     await page.getByRole('button', { name: 'or try it with an example' }).click();
     await page.locator('.skill.missing').first().getByText('how to show it').click();
+    // a second version, so the list of versions shows up too
+    const box = page.getByLabel('Your resume');
+    await box.fill(`${await box.inputValue()}
+- Coloquei o app em produção na AWS com Lambda`);
+    await page.getByRole('button', { name: 'Compare them' }).click();
+    await expect(page.locator('.versions li')).toHaveCount(2);
     expect(await audit(page)).toEqual([]);
   });
 }
+
+test('a cover letter to start from, and the versions of the resume', async ({ page }) => {
+  await page.goto('./');
+  await page.getByRole('button', { name: 'or try it with an example' }).click();
+  const letter = page.getByLabel('The draft');
+  await expect(letter).toHaveValue(/Gostaria de me candidatar à vaga de Pessoa Desenvolvedora Full-stack Pleno\./);
+  await expect(letter).toHaveValue(/Camila Duarte$/);
+  // it can be changed in place
+  await letter.fill('Olá, Ana');
+  await expect(letter).toHaveValue('Olá, Ana');
+
+  // compare a better resume: the new version scores higher and says what it started showing
+  const box = page.getByLabel('Your resume');
+  // under the first job, so it counts as used and not only listed
+  await box.fill((await box.inputValue()).replace('(mar 2023 - atual)\n', '(mar 2023 - atual)\n- Coloquei o app em produção na AWS com Lambda, deploy em 5 minutos\n'));
+  await page.getByRole('button', { name: 'Compare them' }).click();
+  const rows = page.locator('.versions li');
+  await expect(rows).toHaveCount(2);
+  const [now, before] = [Number(await rows.nth(0).locator('.ads-score').innerText()), Number(await rows.nth(1).locator('.ads-score').innerText())];
+  expect(now).toBeGreaterThan(before);
+  await expect(rows.nth(0)).toContainText('in the box now');
+  // going back puts the older text in the box
+  await rows.nth(1).getByRole('button', { name: 'go back to this one' }).click();
+  await expect(box).not.toHaveValue(/Lambda/);
+});
 
 function storedZip(name: string, text: string): Buffer {
   const data = Buffer.from(text);

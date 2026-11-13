@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState, type KeyboardEvent } from 'react';
 import { analyze, type Report, type SkillResult } from './engine/match';
 import { keepAd, rankAds, type SavedAd } from './engine/ads';
+import { coverLetter } from './engine/letter';
+import { keepVersion, scoreVersions, type Version } from './engine/versions';
 import { suggestLine } from './engine/suggest';
 import type { Lang } from './engine/words';
 import { reportText } from './engine/plaintext';
@@ -55,6 +57,11 @@ export default function App() {
     try { return JSON.parse(remembered('shortlist.ads') || '[]'); } catch { return []; }
   });
   useEffect(() => remember('shortlist.ads', JSON.stringify(ads)), [ads]);
+  // every different resume compared, to see whether the last change helped
+  const [versions, setVersions] = useState<Version[]>(() => {
+    try { return JSON.parse(remembered('shortlist.versions') || '[]'); } catch { return []; }
+  });
+  useEffect(() => remember('shortlist.versions', JSON.stringify(versions)), [versions]);
 
   // the page, the report and the browser tab all follow the language picked
   useEffect(() => {
@@ -68,6 +75,7 @@ export default function App() {
     remember('shortlist.job', job);
     setReport(analyze(resume, job, new Date(), lang));
     setCompared({ resume, job });
+    setVersions((list) => keepVersion(list, resume));
     showReport();
   }
 
@@ -89,6 +97,7 @@ export default function App() {
     setJob(SAMPLE_JOB);
     setReport(analyze(SAMPLE_RESUME, SAMPLE_JOB, new Date(), lang));
     setCompared({ resume: SAMPLE_RESUME, job: SAMPLE_JOB });
+    setVersions((list) => keepVersion(list, SAMPLE_RESUME));
     showReport();
   }
 
@@ -154,6 +163,11 @@ export default function App() {
           </p>
         )}
         {report && <ReportView report={report} T={T} />}
+        {report && versions.length > 1 && (
+          <Versions versions={versions} resume={resume} job={compared.job} lang={lang} T={T}
+            onUse={(text) => { setResume(text); document.querySelector<HTMLTextAreaElement>('.inputs textarea')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }} />
+        )}
+        {report && <Letter key={`${compared.resume.length}-${compared.job.length}-${lang}`} report={report} resume={compared.resume} job={compared.job} lang={lang} T={T} />}
         {report && (
           <Ads ads={ads} resume={compared.resume} job={compared.job} lang={lang} T={T}
             onKeep={() => setAds((list) => keepAd(list, compared.job))}
@@ -219,6 +233,68 @@ function SkillRow({ s, T }: { s: SkillResult; T: Texts }) {
       </span>
       {s.onlyListed && <Suggest s={s} T={T} />}
     </li>
+  );
+}
+
+// A first draft of a cover letter, editable in place, to copy and make your own
+function Letter({ report, resume, job, lang, T }: { report: Report; resume: string; job: string; lang: Lang; T: Texts }) {
+  const [text, setText] = useState(() => coverLetter(report, resume, job, lang));
+  const [done, setDone] = useState(false);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(text);
+      setDone(true);
+      setTimeout(() => setDone(false), 2000);
+    } catch {
+      // no clipboard: the text is right there to select
+    }
+  }
+  return (
+    <section className="letter" aria-labelledby="letter-title">
+      <h2 id="letter-title">{T.letterTitle}</h2>
+      <p className="note">{T.letterNote}</p>
+      <label className="sr-only" htmlFor="letter-text">{T.letterLabel}</label>
+      <textarea id="letter-text" value={text} onChange={(e) => setText(e.target.value)} rows={Math.min(22, text.split('\n').length + 2)} />
+      <button type="button" className="link" onClick={copy}>{done ? T.copied : T.copyLetter}</button>
+    </section>
+  );
+}
+
+// The resumes compared before, each scored against the ad open now, with what it started or
+// stopped showing compared to the one before it
+function Versions({ versions, resume, job, lang, T, onUse }: {
+  versions: Version[]; resume: string; job: string; lang: Lang; T: Texts; onUse: (text: string) => void;
+}) {
+  const scored = useMemo(() => scoreVersions(versions, job, new Date(), lang), [versions, job, lang]);
+  const same = (a: string, b: string) => a.replace(/\s+/g, ' ').trim() === b.replace(/\s+/g, ' ').trim();
+  const when = (iso: string) => new Date(iso).toLocaleString(lang === 'pt' ? 'pt-BR' : 'en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  return (
+    <section className="ads versions" aria-labelledby="versions-title">
+      <h2 id="versions-title">{T.versionsTitle}</h2>
+      <p className="note">{T.versionsNote}</p>
+      <ol className="ads-list">
+        {scored.map((v) => {
+          const here = same(v.version.text, resume);
+          return (
+            <li key={v.version.id} className={here ? 'here' : ''}>
+              <span className="ads-score">{v.score}</span>
+              <span className="ads-main">
+                <strong>{when(v.version.at)}</strong>
+                <span className="ads-detail">
+                  {v.gained.length > 0 && <>{T.versionGained}: {v.gained.slice(0, 4).join(', ')}</>}
+                  {v.gained.length > 0 && v.lost.length > 0 && ' · '}
+                  {v.lost.length > 0 && <>{T.versionLost}: {v.lost.slice(0, 4).join(', ')}</>}
+                </span>
+              </span>
+              <span className="ads-actions">
+                {here ? <span className="ads-here">{T.versionNow}</span>
+                  : <button type="button" className="link" onClick={() => onUse(v.version.text)}>{T.versionUse}</button>}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
   );
 }
 

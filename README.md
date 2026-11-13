@@ -29,6 +29,14 @@ For each skill the resume doesn't show, or only lists, there's a folded **"how t
 
 <img src="docs/ads.png" alt="Three kept ads ranked: a full-stack role at 81 with 7 of 7 required, a frontend role at 43 missing CSS and Jest, and a Java backend role at 0" width="620">
 
+**Your versions.** Every different resume you compare is kept (the last eight), and each one is scored against the ad open now, newest first, with what it started or stopped showing compared to the one before (*"89 · started showing: Kubernetes"*). Shown means used in a job or a project, not just typed in a list. So the question "did that last change help?" has an answer, and an older version is one click away if it didn't.
+
+<img src="docs/versions.png" alt="Three versions of the same resume against one ad: 81, then 85 after it started showing AWS, then 89 after Kubernetes, the newest one in the box now" width="620">
+
+**A cover letter to start from.** Under the report there's a first draft made from the comparison: the role, taken from the ad's first line; the skills the ad wants most, each with the line of your resume that shows it ("TypeScript and React: built the new checkout in React and TypeScript, which cut cart abandonment by 18%"), with skills proved by the same line told once; and the required ones you don't have, said plainly, because a gap the recruiter finds on their own reads worse than one you named. It's signed with the name at the top of the resume. The letter goes in the language of the ad, not the page's, so an ad in Portuguese gets a letter in Portuguese. It can be edited in place and copied, and the page says what it is: a draft to rewrite so it sounds like you.
+
+<img src="docs/letter.png" alt="The cover letter draft in Portuguese for a full-stack role: three lines of the resume that match what the ad asks for, a closing line and the name" width="620">
+
 ## Why no AI (yet)
 
 Everything runs in the browser: the resume never leaves the computer, it's instant, it's free to host, and when it says "Kubernetes is missing" you can see exactly which line of the ad asked for it. An AI step to rewrite the weak lines is planned on top of this, as an option.

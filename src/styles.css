@@ -196,3 +196,12 @@ footer { margin: 70px 0 30px; padding-top: 14px; border-top: 1px solid var(--rul
   .ads-actions { grid-column: 2; }
 }
 @media print { .ads { display: none; } }
+
+/* the cover letter draft */
+.letter { margin-top: 48px; max-width: 760px; }
+.letter h2 { font-size: 24px; margin-bottom: 4px; }
+.letter .note { margin-bottom: 12px; }
+.letter textarea { width: 100%; font: inherit; font-size: 16px; line-height: 1.6; padding: 16px 18px; border: 1px solid var(--rule); background: var(--paper, transparent); color: var(--ink); resize: vertical; margin-bottom: 8px; }
+.letter textarea:focus { outline: 2px solid var(--ink); outline-offset: -1px; }
+@media print { .letter, .versions { display: none; } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
