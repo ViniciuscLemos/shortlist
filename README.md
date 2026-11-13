@@ -4,6 +4,8 @@ Paste your resume and a job ad, and see how close they are: what the ad asks for
 
 **Try it:** [viniciusclemos.github.io/shortlist](https://viniciusclemos.github.io/shortlist/). There's an example button if you just want to see it work.
 
+Besides the comparison itself, it keeps the ads you're looking at and ranks them against the resume, scores every version of the resume you tried, suggests a line for each skill you don't show, and drafts a cover letter. The resume can be pasted or picked as a PDF or Word file. Nothing is sent anywhere: it all runs in the browser.
+
 ![The report: a score of 81, a sentence about the match, the requirements with the line of the resume that shows each one, the missing ones underlined in red, and what to fix before sending](docs/report.png)
 
 ## How it reads
