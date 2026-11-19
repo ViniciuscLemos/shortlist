@@ -32,6 +32,11 @@ describe('finding skills in a line', () => {
     expect(ids('Python e R para estatística')).toEqual(['python', 'r', 'statistics']);
   });
 
+  it('knows the test tools of each stack', () => {
+    expect(ids('JUnit 5 e Mockito no back, pytest nos scripts e Vitest no front')).toEqual(['junit', 'mockito', 'pytest', 'vitest']);
+    expect(ids('servidores configurados com Ansible e Terraform')).toEqual(['ansible', 'terraform']);
+  });
+
   it('a single letter only counts written as a name', () => {
     // "r" is a letter in plenty of places; "R" next to other tools is the language
     expect(ids('r. das flores, 120')).toEqual([]);
