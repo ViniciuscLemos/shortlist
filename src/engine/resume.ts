@@ -45,7 +45,7 @@ const MONTHS: Record<string, number> = {
 };
 const MONTH = '(jan|fev|feb|mar|abr|apr|mai|may|jun|jul|ago|aug|set|sep|out|oct|nov|dez|dec)[a-z]*\\.?';
 const POINT = `(?:(${MONTH})\\s*(?:de\\s*)?|(\\d{1,2})\\/)?(\\d{4})`;
-const RANGE = new RegExp(`${POINT}\\s*(?:-|–|a|ate|to|until)\\s*(?:${POINT}|(atual|atualmente|presente|present|hoje|now|current|o momento))`, 'g');
+const RANGE = new RegExp(`${POINT}\\s*(?:-|–|a|ate|to|until)\\s*(?:${POINT}|(atual|atualmente|presente|present|hoje|now|current|o momento|em andamento|today))`, 'g');
 
 function monthIndex(name: string | undefined, number: string | undefined, year: string): number {
   const month = name ? MONTHS[name.slice(0, 3)] ?? 0 : number ? Math.min(Math.max(Number(number) - 1, 0), 11) : 0;
@@ -60,7 +60,9 @@ function monthIndex(name: string | undefined, number: string | undefined, year: 
 export function experienceMonths(text: string, now = new Date()): number {
   const ranges: [number, number][] = [];
   const today = now.getFullYear() * 12 + now.getMonth();
-  for (const m of plain(text).matchAll(RANGE)) {
+  // plain() drops every dash but the ASCII one, and Word turns "2020 - 2021" into an en
+  // dash on its own, so "01/2020 – 12/2021" used to count as no experience at all
+  for (const m of plain(text.replace(/[–—]/g, '-')).matchAll(RANGE)) {
     const start = monthIndex(m[2], m[3], m[4]);
     // groups: 2-4 the start (month name, month number, year), 6-8 the end, 9 "until now"
     const end = m[9] ? today : monthIndex(m[6], m[7], m[8]);

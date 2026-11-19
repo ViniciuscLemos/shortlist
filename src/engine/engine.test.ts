@@ -94,6 +94,10 @@ describe('reading the resume', () => {
     expect(resume.months).toBe(71);
     expect(experienceMonths('jan 2020 - dez 2021\n06/2021 - 03/2022', NOW)).toBe(27);
     expect(experienceMonths('2019 - 2020', NOW)).toBe(13);
+    // the dashes Word and Google Docs put in by themselves
+    expect(experienceMonths('01/2020 – 12/2021', NOW)).toBe(24);
+    expect(experienceMonths('mar 2025 — atual', NOW)).toBe(21);
+    expect(experienceMonths('jun 2026 - em andamento', NOW)).toBe(6);
   });
 
   it('finds the contact', () => {
