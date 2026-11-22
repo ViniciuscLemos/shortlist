@@ -100,6 +100,19 @@ describe('reading the resume', () => {
     expect(experienceMonths('jun 2026 - em andamento', NOW)).toBe(6);
   });
 
+  it('knows other common names for the sections', () => {
+    const other = readResume(
+      'Trajetória profissional\nDev na Loja X, mar 2024 - atual, APIs em Node.js\n'
+      + 'Hard skills:\nDocker, PostgreSQL\n'
+      + 'Work history\nIntern at Y, 2022 - 2023, React\n',
+      NOW,
+    );
+    expect([...other.sections].sort()).toEqual(['experience', 'skills']);
+    expect([...other.evidence.get('node')!.sections]).toEqual(['experience']);
+    expect([...other.evidence.get('docker')!.sections]).toEqual(['skills']);
+    expect([...other.evidence.get('react')!.sections]).toEqual(['experience']);
+  });
+
   it('finds the contact', () => {
     expect(resume.contact).toEqual({ email: true, phone: true, linkedin: true, github: true });
   });

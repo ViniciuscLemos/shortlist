@@ -24,10 +24,10 @@ export interface Resume {
 
 const SECTION_HEADERS: [ResumeSection, RegExp][] = [
   ['summary', /^(resumo( profissional)?|sobre( mim)?|perfil( profissional)?|objetivo|summary|about( me)?|profile|objective)$/],
-  ['experience', /^(experiencias?( profissionais?)?|historico profissional|experience|work experience|professional experience|employment( history)?)$/],
+  ['experience', /^(experiencias?( profissionais?)?|historico profissional|trajetoria profissional|atuacao profissional|experience|work experience|professional experience|employment( history)?|work history|career( history)?)$/],
   ['projects', /^(projetos( pessoais)?|projects|personal projects|portfolio)$/],
-  ['education', /^(formacao( academica)?|educacao|escolaridade|education|academic background)$/],
-  ['skills', /^(habilidades( tecnicas)?|competencias( tecnicas)?|conhecimentos( tecnicos)?|tecnologias|stack|skills|technical skills|tech stack|ferramentas|tools)$/],
+  ['education', /^(formacao( academica)?|educacao|escolaridade|education|academic background|academic education)$/],
+  ['skills', /^(habilidades( tecnicas)?|competencias( tecnicas)?|conhecimentos( tecnicos)?|tecnologias|stack( tecnica)?|skills|technical skills|hard skills|tech stack|ferramentas|tools|technologies)$/],
   ['languages', /^(idiomas|languages)$/],
   ['other', /^(certificacoes|certificados|cursos|certifications|courses|atividades|voluntariado|volunteering|premios|awards)$/],
 ];
