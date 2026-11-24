@@ -66,6 +66,19 @@ describe('reading the job ad', () => {
     expect(job.level).toBe('mid');
   });
 
+  it('knows the other ways ads name their sections', () => {
+    const ad = readJob([
+      'Para essa vaga:', '- Java e Spring',
+      'Será um plus:', '- Kafka',
+      'Nice-to-have', '- Terraform',
+      'O que temos pra você:', '- Aulas de inglês',
+    ].join('\n'));
+    const w = (id: string) => ad.skills.find((s) => s.skill.id === id)?.weight;
+    expect([w('java'), w('spring')]).toEqual(['required', 'required']);
+    expect([w('kafka'), w('terraform')]).toEqual(['nice', 'nice']);
+    expect(w('english')).toBeUndefined();
+  });
+
   it('a plus written inside the requirements is still a plus', () => {
     const inline = readJob('Requisitos:\n- Python\n- Docker (desejável)');
     expect(inline.skills.find((s) => s.skill.id === 'docker')?.weight).toBe('nice');
