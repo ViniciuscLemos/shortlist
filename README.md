@@ -55,7 +55,7 @@ The page comes in English and in Portuguese, picked from the browser's language 
 
 <img src="docs/report-pt.png" alt="The same report in Portuguese: Combina bem, todo requisito está no currículo, mas AWS só numa lista" width="640">
 
-A few small things that make it nicer to use more than once: Ctrl+Enter compares from either sheet, the report says when you've changed the text since it was made, "copy as text" gives a plain version to paste in your notes or send to whoever is helping with the resume, and printing gives just the report, on white.
+A few small things that make it nicer to use more than once: Ctrl+Enter compares from either sheet, the report says when you've changed the text since it was made, "copy as text" gives a plain version to paste in your notes or send to whoever is helping with the resume, and printing gives just the report, on white. "Share as an image" draws the score on a card ("meu currículo bateu 81% com essa vaga") to post, with nothing from the resume or the ad in it; on a phone it opens the share sheet, elsewhere it downloads the PNG.
 
 <img src="docs/report-dark.png" alt="The report in dark mode" width="640">
 

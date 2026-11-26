@@ -33,6 +33,33 @@ test('on a phone the example is one tap away from the top', async ({ page, isMob
   await expect(page.getByRole('region', { name: 'The comparison' })).toBeFocused();
 });
 
+test('the score can be saved as a picture, with nothing from the resume in it', async ({ page, isMobile }) => {
+  if (isMobile) {
+    // a phone opens its share sheet instead; stand in for it to see what it was given
+    await page.addInitScript(() => {
+      const w = window as unknown as { shared: string[] };
+      w.shared = [];
+      navigator.canShare = () => true;
+      navigator.share = async (data) => { w.shared.push(...(data?.files ?? []).map((f) => `${f.name} ${f.type}`)); };
+    });
+  }
+  await page.goto('./');
+  await page.getByRole('button', { name: 'or try it with an example' }).click();
+  const score = await page.locator('.score span').innerText();
+  if (isMobile) {
+    await page.getByRole('button', { name: 'share as an image' }).click();
+    await expect.poll(() => page.evaluate(() => (window as unknown as { shared: string[] }).shared)).toEqual([`shortlist-${score}.png image/png`]);
+    return;
+  }
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'share as an image' }).click();
+  const file = await download;
+  expect(file.suggestedFilename()).toBe(`shortlist-${score}.png`);
+  const bytes = await (await file.createReadStream()).toArray();
+  // a PNG starts with these bytes
+  expect(Buffer.concat(bytes).subarray(1, 4).toString()).toBe('PNG');
+});
+
 test('Português changes the page and the report, not the score', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'or try it with an example' }).click();

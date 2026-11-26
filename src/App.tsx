@@ -10,6 +10,7 @@ import { SAMPLE_JOB, SAMPLE_RESUME } from './engine/samples';
 import { docxText } from './docx';
 import { pdfText } from './pdf';
 import { firstLang, UI, type Texts } from './ui';
+import { shareScore } from './share';
 
 // the texts stay in this browser between visits, and nowhere else
 function remembered(key: string): string {
@@ -357,6 +358,18 @@ function CopyText({ report, T }: { report: Report; T: Texts }) {
   return <button type="button" className="link copy" onClick={copy}>{done ? T.copied : T.copy}</button>;
 }
 
+// only the score goes in the picture, so it can be posted without showing the resume or the ad
+function ShareImage({ score, T }: { score: number; T: Texts }) {
+  const [saved, setSaved] = useState(false);
+  async function share() {
+    if ((await shareScore(score, T.lang)) === 'saved') {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    }
+  }
+  return <button type="button" className="link copy" onClick={share}>{saved ? T.shareSaved : T.shareImage}</button>;
+}
+
 function ReportView({ report, T }: { report: Report; T: Texts }) {
   const { years, level } = report;
   return (
@@ -366,6 +379,7 @@ function ReportView({ report, T }: { report: Report; T: Texts }) {
         <p className="verdict">{report.verdict}</p>
         <span className="report-tools">
           <CopyText report={report} T={T} />
+          <ShareImage score={report.score} T={T} />
           <button type="button" className="link copy" onClick={() => window.print()}>{T.print}</button>
         </span>
       </div>
