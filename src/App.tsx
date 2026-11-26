@@ -376,6 +376,20 @@ function ReportView({ report, T }: { report: Report; T: Texts }) {
       )}
 
       <div className="groups">
+        {report.loose.length > 0 && (
+          <section className="group">
+            <h2>{T.looseTitle} <span className="tally">{T.of(report.loose.filter((r) => r.found).length, report.loose.length)}</span></h2>
+            <p className="note">{T.looseNote}</p>
+            <ul>
+              {report.loose.map((r) => (
+                <li key={r.line} className={`skill ${r.found ? 'shown' : 'missing'}`}>
+                  <span className="name">{r.found ? <mark>{quote(r.line, 70)}</mark> : quote(r.line, 70)}</span>
+                  <span className="where">{r.found ? T.looseFound : T.looseMissing}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         {T.groups.map(([weight, title, note]) => {
           const list = report.skills.filter((s) => s.weight === weight);
           if (!list.length) return null;

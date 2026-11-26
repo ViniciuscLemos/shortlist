@@ -15,6 +15,8 @@ Besides the comparison itself, it keeps the ads you're looking at and ranks them
 - **Experience** is added up from the date ranges ("mar 2023 - atual", "01/2020 – 12/2021"), and two jobs at the same time don't count twice.
 - **Skills** come from a dictionary of about 115, each with the ways people write it ("Node.js", "NodeJS", "node"; "testes unitários", "unit tests", "TDD"). Short names that are also plain words ("Go", "Excel", "REST", "C") only count written the technical way, so "I go to" and "excel at" don't turn into skills.
 
+- **Ads outside tech.** A nutrition internship asks for "avaliação nutricional", "cálculo de dietas" and Excel. Scoring only the Excel, the one skill in the dictionary, would say the resume has everything. So when most of the requirement lines have no known skill, each one is compared by its own words (minus filler like "conhecimento em" or "experience with"), counts as there when at least half of them are in the resume, and the verdict says the score is a rough guide.
+
 ## What it says
 
 A score from 0 to 100 (required counts 3, mentioned 2, a plus 1), a sentence about the match, what's missing, and a few checks on the resume itself: contact at the top, a GitHub or LinkedIn link, lines with numbers in them ("reduced cart abandonment by 18%"), lines that start with what you did instead of "responsible for", skills the ad asks for that only show up in a list, and skills written differently from the ad.

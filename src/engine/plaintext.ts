@@ -1,6 +1,6 @@
 import type { Report } from './match';
 
-export interface TextWords { required: string; mentioned: string; nice: string; missing: string; listed: string; fix: string }
+export interface TextWords { loose?: string; required: string; mentioned: string; nice: string; missing: string; listed: string; fix: string }
 
 const EN: TextWords = { required: 'Required', mentioned: 'Also mentioned', nice: 'A plus', missing: 'missing', listed: 'only in a list', fix: 'To fix' };
 
@@ -19,6 +19,11 @@ export function reportText(report: Report, names: Record<string, string>, W: Tex
       const note = !s.evidence ? W.missing : s.onlyListed ? W.listed : '';
       out.push(`  ${mark} ${s.skill.name}${note ? ` (${note})` : ''}`);
     }
+    out.push('');
+  }
+  if (report.loose.length) {
+    out.push(`${W.loose ?? 'Compared by their words'}:`);
+    for (const r of report.loose) out.push(`  ${r.found ? '✓' : '✗'} ${r.line}`);
     out.push('');
   }
   const todo = report.checks.filter((c) => !c.ok);

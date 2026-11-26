@@ -245,3 +245,52 @@ describe('several ads against one resume', () => {
     expect(adTitle('x'.repeat(200))).toHaveLength(70);
   });
 });
+
+describe('an ad outside tech', () => {
+  const ad = `Estágio em Nutrição
+Requisitos:
+- Cursando Nutrição a partir do 5º semestre
+- Conhecimento em avaliação nutricional
+- Cálculo de dietas e cardápios
+- Atendimento ambulatorial
+- Pacote Office (Excel)`;
+  const nutrition = `Experiência
+- Estágio em nutrição clínica no Hospital São Lucas (03/2025 - atual): avaliação nutricional de pacientes internados e elaboração de dietas e cardápios
+Formação
+- Nutrição, Universidade Mackenzie, 6º semestre
+Habilidades
+- Excel`;
+  const dev = `Experiência
+- Desenvolvi APIs em Node.js e React (2022 - atual)
+Habilidades
+- Excel, TypeScript`;
+
+  it("doesn't call it a full match because Excel was the only skill it knew", () => {
+    const r = analyze(dev, ad, NOW, 'pt');
+    expect(r.loose.length).toBe(4);
+    expect(r.loose.every((l) => !l.found)).toBe(true);
+    expect(r.score).toBeLessThan(30);
+    expect(r.verdict).toContain('pelas próprias palavras');
+    expect(r.verdict).not.toContain('Tem tudo');
+  });
+
+  it('compares each requirement by its words', () => {
+    const r = analyze(nutrition, ad, NOW);
+    const found = (start: string) => r.loose.find((l) => l.line.startsWith(start))!.found;
+    expect(found('Conhecimento em avaliação')).toBe(true);
+    expect(found('Cálculo de dietas')).toBe(true);
+    expect(found('Cursando Nutrição')).toBe(true);
+    expect(found('Atendimento ambulatorial')).toBe(false);
+    expect(r.score).toBeGreaterThan(60);
+    expect(r.verdict).toContain('4 of 5');
+  });
+
+  it('a tech ad with a line or two outside the list is scored as before', () => {
+    const r = analyze(SAMPLE_RESUME, SAMPLE_JOB, NOW);
+    expect(r.loose).toEqual([]);
+  });
+
+  it('the text copy lists those lines too', () => {
+    expect(reportText(analyze(nutrition, ad, NOW), {})).toContain('✗ Atendimento ambulatorial');
+  });
+});

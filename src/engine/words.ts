@@ -15,6 +15,7 @@ export interface Words {
   manyMissing(count: number, names: string[], more: boolean): string;
   someListed(count: number): string;
   most: string;
+  loose(found: number, of: number): string;
 
   contact(email: boolean, phone: boolean): string;
   links: string;
@@ -38,6 +39,7 @@ const en: Words = {
   manyMissing: (count, names, more) => `${count} requirements aren't in the resume: ${names.join(', ')}${more ? '…' : ''}.`,
   someListed: (count) => `Everything asked is there, but ${count} of it only in a list, never shown in a job or project.`,
   most: 'Most of what they ask is there.',
+  loose: (found, of) => `Most of this ad isn't tech skills, which is what this knows best, so each requirement was compared by its own words: ${found} of ${of} show up in the resume. Take the score as a rough guide and read the ad yourself.`,
 
   contact: (email, phone) =>
     `Put ${list([!email && 'an email', !phone && 'a phone number'].filter(Boolean) as string[], 'and')} at the top. A recruiter who likes the resume needs a way to call.`,
@@ -65,6 +67,7 @@ const pt: Words = {
   manyMissing: (count, names, more) => `Faltam ${count} requisitos no currículo: ${names.join(', ')}${more ? '…' : ''}.`,
   someListed: (count) => `Tem tudo o que pedem, mas ${count} só numa lista, sem aparecer em nenhum trabalho ou projeto.`,
   most: 'A maior parte do que pedem está lá.',
+  loose: (found, of) => `Quase nada desta vaga é habilidade de tecnologia, que é o que isto conhece melhor, então cada requisito foi comparado pelas próprias palavras: ${found} de ${of} aparecem no currículo. Use a nota como uma ideia geral e leia a vaga com calma.`,
 
   contact: (email, phone) =>
     `Coloque ${list([!email && 'um e-mail', !phone && 'um telefone'].filter(Boolean) as string[], 'e')} no topo. Quem gostar do currículo precisa ter como ligar.`,

@@ -31,6 +31,30 @@ test('Português changes the page and the report, not the score', async ({ page 
   await page.getByRole('button', { name: 'English' }).click();
 });
 
+test('an ad outside tech is compared line by line, with a warning', async ({ page }) => {
+  await page.goto('./');
+  await page.getByLabel('Your resume').fill([
+    'Experiência',
+    '- Estágio em nutrição clínica: avaliação nutricional de pacientes e elaboração de dietas e cardápios',
+    'Habilidades',
+    '- Excel',
+  ].join('\n'));
+  await page.getByLabel('The job ad').fill([
+    'Estágio em Nutrição',
+    'Requisitos:',
+    '- Conhecimento em avaliação nutricional',
+    '- Cálculo de dietas e cardápios',
+    '- Atendimento ambulatorial',
+    '- Pacote Office (Excel)',
+  ].join('\n'));
+  await page.getByRole('button', { name: 'Compare' }).click();
+  const report = page.getByRole('region', { name: 'The comparison' });
+  await expect(report.locator('.verdict')).toContainText('compared by its own words');
+  await expect(report.getByRole('heading', { name: /Compared by their words/ })).toContainText('2 of 3');
+  await expect(report.getByText("the resume doesn't seem to mention it")).toBeVisible();
+  expect(await audit(page)).toEqual([]);
+});
+
 test('a Word file is read into the resume', async ({ page }) => {
   await page.goto('./');
   // a minimal .docx: a stored (uncompressed) zip with word/document.xml

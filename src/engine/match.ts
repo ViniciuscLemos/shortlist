@@ -2,6 +2,7 @@ import { readJob, type Job, type JobSkill, type Level, type Weight } from './job
 import { readResume, type Evidence, type Resume } from './resume';
 import { spelledAs } from './find';
 import { plain } from './text';
+import { contentWords, lineFound, resumeWords } from './loose';
 import { WORDS, type Lang, type Words } from './words';
 
 export interface SkillResult extends JobSkill {
@@ -27,6 +28,11 @@ export interface Report {
   years: { asked: number | null; have: number };
   level: Level | null;
   checks: Check[];
+  /**
+   * The requirements no known skill was found in, compared by their own words. Only filled
+   * when most of the requirements are like that (an ad outside tech), otherwise empty.
+   */
+  loose: { line: string; found: boolean }[];
   job: Job;
   resume: Resume;
 }
@@ -49,20 +55,33 @@ export function analyze(resumeText: string, jobText: string, now = new Date(), l
     return { ...js, evidence, onlyListed: !!evidence && !used };
   });
 
-  const total = skills.reduce((sum, s) => sum + WEIGHT[s.weight], 0);
-  const got = skills.reduce((sum, s) => sum + (s.evidence ? WEIGHT[s.weight] * (s.onlyListed ? LISTED_ONLY : 1) : 0), 0);
+  // a nutrition ad asks for "avaliação nutricional" and "cálculo de dietas" and maybe Excel.
+  // Scoring only the Excel would say "has everything", so when most requirements are outside
+  // the skill list they're compared by their words and counted too
+  const unknown = job.requirements.filter((r) => !r.known && contentWords(r.line).length);
+  const knownLines = job.requirements.length - job.requirements.filter((r) => !r.known).length;
+  const words = resumeWords(resumeText);
+  const loose = unknown.length > knownLines ? unknown.map((r) => ({ line: r.line, found: lineFound(r.line, words) })) : [];
+
+  const total = skills.reduce((sum, s) => sum + WEIGHT[s.weight], 0) + loose.length * WEIGHT.required;
+  const got = skills.reduce((sum, s) => sum + (s.evidence ? WEIGHT[s.weight] * (s.onlyListed ? LISTED_ONLY : 1) : 0), 0)
+    + loose.filter((r) => r.found).length * WEIGHT.required;
   const score = total ? Math.round((100 * got) / total) : 0;
   const missing = skills.filter((s) => !s.evidence);
   const years = { asked: job.years, have: Math.floor(resume.months / 12) };
 
   return {
     score,
-    verdict: verdict(score, skills, missing, years, total, W),
+    verdict: loose.length
+      ? W.loose(loose.filter((r) => r.found).length + skills.filter((s) => s.weight === 'required' && s.evidence).length,
+        loose.length + skills.filter((s) => s.weight === 'required').length)
+      : verdict(score, skills, missing, years, total, W),
     skills,
     missing,
     years,
     level: job.level,
     checks: checks(resume, skills, W),
+    loose,
     job,
     resume,
   };

@@ -15,6 +15,8 @@ export type Level = 'intern' | 'junior' | 'mid' | 'senior' | 'lead';
 
 export interface Job {
   skills: JobSkill[];
+  /** every line of the requirements, and whether a known skill was found in it */
+  requirements: { line: string; known: boolean }[];
   years: number | null;
   level: Level | null;
 }
@@ -54,6 +56,7 @@ export function readJob(text: string): Job {
   const rank: Record<Weight, number> = { required: 3, mentioned: 2, nice: 1 };
   let section: Section = 'mentioned';
   let years: number | null = null;
+  const requirements: Job['requirements'] = [];
 
   for (const line of lines(text)) {
     const header = headerOf(line);
@@ -72,7 +75,9 @@ export function readJob(text: string): Job {
     }
 
     const weight: Weight = section === 'required' && NICE_INLINE.test(flat) ? 'nice' : section;
-    for (const skill of skillsIn(line)) {
+    const inLine = skillsIn(line);
+    if (weight === 'required') requirements.push({ line: header ? line.split(':').slice(1).join(':').trim() : line, known: inLine.length > 0 });
+    for (const skill of inLine) {
       const before = found.get(skill.id);
       // a skill asked in two places counts with the strongest of them
       if (!before || rank[weight] > rank[before.weight]) found.set(skill.id, { skill, weight, line });
@@ -83,5 +88,5 @@ export function readJob(text: string): Job {
   const top = plain(lines(text).slice(0, 3).join(' '));
   const level = LEVELS.find(([, pattern]) => pattern.test(top))?.[0] ?? null;
 
-  return { skills: [...found.values()], years, level };
+  return { skills: [...found.values()], requirements, years, level };
 }
