@@ -126,6 +126,9 @@ export default function App() {
         </div>
         <h1>{T.title}</h1>
         <p className="lede">{T.lede}</p>
+        {/* on a phone the other button is below two long boxes; most people arrive here from
+            a post on their phone and just want to see what it does */}
+        <button type="button" className="link example-top" onClick={example}>{T.exampleTop}</button>
       </header>
 
       <main>

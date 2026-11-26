@@ -20,6 +20,19 @@ test('the example: score, skills, a line to start from, and the checks', async (
   await expect(report.getByRole('heading', { name: 'Before you send it' })).toBeVisible();
 });
 
+test('on a phone the example is one tap away from the top', async ({ page, isMobile }) => {
+  await page.goto('./');
+  const top = page.getByRole('button', { name: 'No resume at hand? See it work on an example' });
+  if (!isMobile) {
+    // on a wide screen the button under the boxes is already in view
+    await expect(top).toBeHidden();
+    return;
+  }
+  await expect(top).toBeInViewport();
+  await top.click();
+  await expect(page.getByRole('region', { name: 'The comparison' })).toBeFocused();
+});
+
 test('Português changes the page and the report, not the score', async ({ page }) => {
   await page.goto('./');
   await page.getByRole('button', { name: 'or try it with an example' }).click();

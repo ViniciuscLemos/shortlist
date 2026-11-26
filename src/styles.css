@@ -56,6 +56,7 @@ button, textarea { font: inherit; color: inherit; }
 .wordmark::before { content: ''; display: inline-block; width: 18px; height: 10px; background: var(--marker); margin-right: 8px; }
 .masthead h1 { font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; letter-spacing: -0.01em; }
 .lede { font-size: 18px; color: var(--ink-soft); margin: 16px 0 0; }
+.example-top { display: none; margin-top: 14px; font-size: 16px; color: var(--ink); text-decoration-color: var(--marker); text-decoration-thickness: 2px; }
 
 .inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .sheet { display: flex; flex-direction: column; background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: 14px 16px 10px; }
@@ -90,6 +91,7 @@ footer { margin: 70px 0 30px; padding-top: 14px; border-top: 1px solid var(--rul
 @media (max-width: 760px) {
   .page { padding: 0 16px; }
   .inputs { grid-template-columns: 1fr; }
+  .example-top { display: inline; }
   .sheet textarea { min-height: 200px; }
   .score span { font-size: 56px; }
   .verdict { font-size: 19px; }
@@ -129,7 +131,7 @@ footer { margin: 70px 0 30px; padding-top: 14px; border-top: 1px solid var(--rul
 @media print {
   :root { --paper: #fff; --ink: #000; --ink-soft: #222; --ink-faint: #555; }
   body { background: #fff; }
-  .inputs, .actions, .stale, .report-tools, footer, .lede { display: none; }
+  .inputs, .actions, .stale, .report-tools, footer, .lede, .example-top { display: none; }
   .masthead h1 { font-size: 20px; }
   .report { margin-top: 0; border: 0; }
   .groups { grid-template-columns: 1fr 1fr; gap: 20px; }
