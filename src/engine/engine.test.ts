@@ -290,6 +290,12 @@ Habilidades
     expect(r.loose).toEqual([]);
   });
 
+  it("doesn't suggest a GitHub for a job outside tech", () => {
+    const links = analyze(nutrition, ad, NOW).checks.find((c) => c.id === 'links')!;
+    expect(links.advice).toContain('LinkedIn');
+    expect(links.advice).not.toContain('GitHub');
+  });
+
   it('the text copy lists those lines too', () => {
     expect(reportText(analyze(nutrition, ad, NOW), {})).toContain('✗ Atendimento ambulatorial');
   });

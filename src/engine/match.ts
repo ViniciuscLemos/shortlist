@@ -80,7 +80,7 @@ export function analyze(resumeText: string, jobText: string, now = new Date(), l
     missing,
     years,
     level: job.level,
-    checks: checks(resume, skills, W),
+    checks: checks(resume, skills, W, loose.length > 0),
     loose,
     job,
     resume,
@@ -105,13 +105,14 @@ function verdict(score: number, skills: SkillResult[], missing: SkillResult[], y
   return W.most + short;
 }
 
-function checks(resume: Resume, skills: SkillResult[], W: Words): Check[] {
+function checks(resume: Resume, skills: SkillResult[], W: Words, outsideTech = false): Check[] {
   const out: Check[] = [];
   const add = (id: string, ok: boolean, advice: () => string) => out.push({ id, ok, advice: ok ? '' : advice() });
 
   const { contact } = resume;
   add('contact', contact.email && contact.phone, () => W.contact(contact.email, contact.phone));
-  add('links', contact.linkedin || contact.github, () => W.links);
+  // a GitHub only matters to developers; for a nutrition internship it's just LinkedIn
+  add('links', contact.linkedin || contact.github, () => (outsideTech ? W.linkedin : W.links));
   add('experience', resume.sections.has('experience') || resume.sections.has('projects'), () => W.experience);
 
   if (resume.words > 900) add('length', false, () => W.tooLong(resume.words));

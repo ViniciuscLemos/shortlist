@@ -19,6 +19,7 @@ export interface Words {
 
   contact(email: boolean, phone: boolean): string;
   links: string;
+  linkedin: string;
   experience: string;
   tooLong(words: number): string;
   tooShort(words: number): string;
@@ -44,6 +45,7 @@ const en: Words = {
   contact: (email, phone) =>
     `Put ${list([!email && 'an email', !phone && 'a phone number'].filter(Boolean) as string[], 'and')} at the top. A recruiter who likes the resume needs a way to call.`,
   links: 'Add a LinkedIn or GitHub link. For a developer, a GitHub with real projects often says more than the resume.',
+  linkedin: 'Add a LinkedIn link. A recruiter who likes the resume usually looks there next.',
   experience: 'There\'s no "Experience" or "Projects" section that this could find. Give what you did its own heading, so it stands out from the rest.',
   tooLong: (words) => `It's about ${words} words. One or two pages is what gets read; cut the oldest jobs to a line each.`,
   tooShort: (words) => `It's only about ${words} words. Say what you built, with what, and what came out of it.`,
@@ -72,6 +74,7 @@ const pt: Words = {
   contact: (email, phone) =>
     `Coloque ${list([!email && 'um e-mail', !phone && 'um telefone'].filter(Boolean) as string[], 'e')} no topo. Quem gostar do currículo precisa ter como ligar.`,
   links: 'Coloque um link do LinkedIn ou do GitHub. Pra quem é dev, um GitHub com projetos de verdade muitas vezes diz mais que o currículo.',
+  linkedin: 'Coloque o link do seu LinkedIn. Quem gostar do currículo normalmente vai olhar lá em seguida.',
   experience: 'Não achei uma seção de "Experiência" ou "Projetos". Dê ao que você fez um título próprio, pra se destacar do resto.',
   tooLong: (words) => `Tem umas ${words} palavras. Uma ou duas páginas é o que se lê; deixe os trabalhos mais antigos com uma linha cada.`,
   tooShort: (words) => `Tem só umas ${words} palavras. Diga o que você construiu, com o quê, e o que saiu disso.`,
